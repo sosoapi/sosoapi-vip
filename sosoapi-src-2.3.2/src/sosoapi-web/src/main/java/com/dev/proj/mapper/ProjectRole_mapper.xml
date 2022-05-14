@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.proj.dao.ProjectRoleDao">
+	<insert id="add" parameterType="projectRole" useGeneratedKeys="true" keyProperty="id">
+		insert into t_proj_role
+			(
+				create_date,
+				modify_date,
+				proj_id,
+				code,
+				name,
+				description,
+				status,
+				sort_weight,
+				del_disabled,
+				home_url
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{projId},
+				#{code},
+				#{name},
+				#{description},
+				#{status},
+				#{sortWeight},
+				#{delDisabled},
+				#{homeUrl}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="projectRole">
+		update t_proj_role
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="homeUrl != null and '' != homeUrl"> home_url = #{homeUrl},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_proj_role
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="projectRole">
+		select
+			*
+		from
+			t_proj_role
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			t_proj_role
+		<where>
+			<if test="projId != null">
+			and
+				proj_id = #{projId}
+			</if>
+			<if test="projId == null">
+			and
+				proj_id is null
+			</if>
+			<if test="name != null and '' != name">
+			and
+				name like #{name}
+			</if>
+			<if test="code != null and '' != code">
+			and
+				code like #{code}
+			</if>
+			<if test="status != null and '' != status">
+			and
+				status = #{status}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="list" resultType="projectRole">
+		select
+			*
+		<include refid="sqlForList"></include>
+		order by
+			sort_weight asc
+		<if test="pager != null">
+		limit
+			#{pager.start},#{pager.pageSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForList"></include>
+	</select>
+	
+	<insert id="batchAddPriv" parameterType="java.util.List">
+		insert into t_proj_role_privilege
+			(
+				create_date,
+				modify_date,
+				proj_role_id,
+				proj_privilege_id
+			)   
+    	values  
+	    <foreach collection="idList" item="item" index="index" separator="," >  
+	        (	
+	        	now(),
+				now(),
+				#{roleId},
+				#{item}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<delete id="batchDelPriv">
+		delete from
+			t_proj_role_privilege
+		where
+			proj_role_id = #{roleId}
+	</delete>
+	
+	<select id="listByProjId" resultType="projectRole">
+		select
+			*
+		from
+			t_proj_role
+		where
+			status = 'on'
+		<choose>
+			<when test="projId != null">
+				and
+					(proj_id is null or proj_id = #{projId})
+			</when>
+			<otherwise>
+				and
+					proj_id is null
+			</otherwise>
+		</choose>
+		order by
+			ifnull(proj_id,0) desc,sort_weight asc
+	</select>
+	
+	<select id="listTreeByRoleId" resultType="map">
+		select
+			p.id,
+			p.name,
+			p.type,
+			p.parent_id,
+			p.icon_class,
+			p.img_url,
+			rp.id as relation_id
+		from
+			t_privilege p
+		left join
+			t_proj_role_privilege rp
+		on
+			(	p.id = rp.proj_privilege_id 
+			and
+				rp.proj_role_id = #{roleId})
+		where
+			p.status = 'on'
+		and
+			p.scope in ('proj','common')
+		order by
+			p.sort_weight asc,p.create_date desc
+	</select>
+	
+	<select id="countByProjId" resultType="int">
+		select
+			count(id)
+		from
+			t_proj_role
+		where
+			id = #{roleId}
+		and
+			proj_id = #{projId}
+	</select>
+	
+	<select id="getByProjIdAndUserId" resultType="projectRole">
+		select
+			pr.*
+		from
+			t_proj_mem pm
+		inner join
+			t_proj_role pr
+		on
+			pm.proj_role_id = pr.id
+		where
+			pm.proj_id = #{projId}
+		and
+			pm.user_id = #{userId}
+	</select>
+	
+	<select id="listPriv" resultType="map">
+		select
+			p1.id,
+			p1.name,
+			p1.code,
+			p1.type,
+			p1.parent_id,
+			p1.url,
+			p1.img_url,
+			p2.code as parent_code,
+			p2.name as parent_name,
+			p1.permission,
+			p1.status,
+			p1.access_verify,
+			p1.icon_class
+		from
+			t_proj_role r
+		inner join
+			t_proj_role_privilege rp
+		on
+			r.id = rp.proj_role_id
+		inner join
+			t_privilege p1
+		on
+			rp.proj_privilege_id = p1.id
+		left join
+			t_privilege p2
+		on	
+			p1.parent_id = p2.id
+		where
+			r.id = #{roleId}
+		and
+			p1.scope in ('proj','common')
+		and
+			r.status = 'on'
+		<if test="status != null and '' != status">
+		and
+			p1.status = #{status}
+		</if>
+		<if test="accessVerify != null">
+		and
+			p1.access_verify = #{accessVerify}
+		</if>
+		order by
+			ifnull(p2.sort_weight,0) asc,p1.sort_weight asc
+	</select>
+</mapper>

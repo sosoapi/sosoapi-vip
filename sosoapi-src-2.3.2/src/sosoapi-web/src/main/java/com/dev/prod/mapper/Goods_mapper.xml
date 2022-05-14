@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.prod.dao.GoodsDao">
+	<insert id="add" parameterType="goods" useGeneratedKeys="true" keyProperty="id">
+		insert into t_goods
+			(
+				create_date,
+				modify_date,
+				type,
+				name,
+				description,
+				price,
+				cover_url,
+				detail_info,
+				discount,
+				status,
+				sell_count,
+				total_count,
+				download_url,
+				file_name,
+				pub_date,
+				pub_status
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{type},
+				#{name},
+				#{description},
+				#{price},
+				#{coverUrl},
+				#{detailInfo},
+				#{discount},
+				#{status},
+				#{sellCount},
+				#{totalCount},
+				#{downloadUrl},
+				#{fileName},
+				#{pubDate},
+				#{pubStatus}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="goods">
+		update t_goods
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="price != null"> price = #{price},</if>
+			<if test="coverUrl != null and '' != coverUrl"> cover_url = #{coverUrl},</if>
+			<if test="detailInfo != null and '' != detailInfo"> detail_info = #{detailInfo},</if>
+			<if test="discount != null"> discount = #{discount},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="sellCount != null"> sell_count = #{sellCount},</if>
+			<if test="totalCount != null"> total_count = #{totalCount},</if>
+			<if test="downloadUrl != null and '' != downloadUrl"> download_url = #{downloadUrl},</if>
+			<if test="fileName != null and '' != fileName"> file_name = #{fileName},</if>
+			<if test="pubDate != null and '' != pubDate"> pub_date = #{pubDate},</if>
+			<if test="pubStatus != null and '' != pubStatus"> pub_status = #{pubStatus},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_goods
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="goods">
+		select
+			*
+		from
+			t_goods
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			t_goods
+		<where>
+			<if test="type != null">
+			and
+				type = #{type}
+			</if>
+			
+			<if test="name != null and '' != name">
+			and
+				name like #{name}
+			</if>
+			
+			<if test="status != null">
+			and
+				status = #{status}
+			</if>
+			
+			<if test="pubStatus != null">
+			and
+				pub_status = #{pubStatus}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="list" resultType="goods">
+		select
+			*
+		<include refid="sqlForList"></include>
+		order by
+			pub_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="count" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForList"></include>
+	</select>
+</mapper>

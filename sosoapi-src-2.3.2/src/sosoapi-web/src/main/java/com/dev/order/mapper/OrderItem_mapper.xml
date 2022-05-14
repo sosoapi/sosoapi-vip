@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.order.dao.OrderItemDao">
+	<insert id="add" parameterType="orderItem" useGeneratedKeys="true" keyProperty="id">
+		insert into t_order_item
+			(
+				create_date,
+				modify_date,
+				order_id,
+				goods_id,
+				goods_name,
+				goods_desc,
+				goods_count,
+				price,
+				total_fee,
+				refund_fee,
+				refund_remark,
+				trade_status
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{orderId},
+				#{goodsId},
+				#{goodsName},
+				#{goodsDesc},
+				#{goodsCount},
+				#{price},
+				#{totalFee},
+				#{refundFee},
+				#{refundRemark},
+				#{tradeStatus}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="orderItem">
+		update t_order_item
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="orderId != null"> order_id = #{orderId},</if>
+			<if test="goodsId != null and '' != goodsId"> goods_id = #{goodsId},</if>
+			<if test="goodsName != null and '' != goodsName"> goods_name = #{goodsName},</if>
+			<if test="goodsDesc != null and '' != goodsDesc"> goods_desc = #{goodsDesc},</if>
+			<if test="goodsCount != null"> goods_count = #{goodsCount},</if>
+			<if test="price != null"> price = #{price},</if>
+			<if test="totalFee != null"> total_fee = #{totalFee},</if>
+			<if test="refundFee != null"> refund_fee = #{refundFee},</if>
+			<if test="refundRemark != null and '' != refundRemark"> refund_remark = #{refundRemark},</if>
+			<if test="tradeStatus != null and '' != tradeStatus"> trade_status = #{tradeStatus},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_order_item
+		where
+			id = #{id}
+	</delete>
+	
+	<delete id="delByOrderId" parameterType="long">
+		delete from
+			t_order_item
+		where
+			order_id = #{orderId}
+	</delete>
+	
+	<select id="getById" resultType="orderItem">
+		select
+			*
+		from
+			t_order_item
+		where
+			id = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.RespSchemaDao">
+	<insert id="add" parameterType="respSchema" useGeneratedKeys="true" keyProperty="id">
+		insert into t_resp_schema
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				module_id,
+				code,
+				name,
+				description,
+				cust_schema,
+				type,
+				ref_schema_id,
+				mock_data,
+				mock_rule,
+				mock_type
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{moduleId},
+				#{code},
+				#{name},
+				#{description},
+				#{custSchema},
+				#{type},
+				#{refSchemaId},
+				#{mockData},
+				#{mockRule},
+				#{mockType}
+			)	
+	</insert>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_resp_schema
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				module_id,
+				code,
+				name,
+				description,
+				cust_schema,
+				type,
+				ref_schema_id,
+				mock_data,
+				mock_rule,
+				mock_type
+			)
+		values
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.docId},
+				#{item.moduleId},
+				#{item.code},
+				#{item.name},
+				#{item.description},
+				#{item.custSchema},
+				#{item.type},
+				#{item.refSchemaId},
+				#{item.mockData},
+				#{item.mockRule},
+				#{item.mockType}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<update id="updateByDocId" parameterType="respSchema">
+		update t_resp_schema
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="moduleId != null and '' != moduleId"> module_id = #{moduleId},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="true"> description = #{description},</if>
+			<if test="custSchema != null and '' != custSchema"> cust_schema = #{custSchema},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="refSchemaId != null and '' != refSchemaId"> ref_schema_id = #{refSchemaId},</if>
+			<if test="mockData != null and '' != mockData"> mock_data = #{mockData},</if>
+			<if test="mockRule != null and '' != mockRule"> mock_rule = #{mockRule},</if>
+			<if test="mockType != null and '' != mockType"> mock_type = #{mockType},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			doc_id = ${docId}
+	</update>
+	
+	<delete id="deleteByDocId">
+		delete from
+			t_resp_schema
+		where
+			id = #{schemaId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="getById" resultType="respSchema">
+		select
+			*
+		from
+			t_resp_schema
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByDocId" resultType="respSchema">
+		select
+			*
+		from
+			t_resp_schema
+		where
+			id = #{schemaId}
+		and
+			doc_id = #{docId}
+	</select>
+	
+	<sql id="sqlForListByDocId">
+		from
+			t_resp_schema s
+		left join
+			t_module m
+		on
+			s.module_id = m.id
+		where
+			s.doc_id = #{docId}
+		<if test="moduleId != null">
+		and
+			s.module_id = #{moduleId}
+		</if>
+		
+		<if test="code != null and '' != code">
+		and
+			s.code like #{code}
+		</if>
+		
+		<if test="name != null and '' != name">
+		and
+			s.name like #{name}
+		</if>
+		
+		<if test="description != null and '' != description">
+		and
+			s.description like #{description}
+		</if>
+	</sql>
+	
+	<select id="listByDocId" resultType="map">
+		select
+			s.id,
+			s.doc_id,
+			s.module_id,
+			s.code,
+			s.name,
+			s.description,
+			s.type,
+			s.create_date,
+			m.name as module_name
+		<include refid="sqlForListByDocId"></include>
+		order by
+			s.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByDocId" resultType="int">
+		select
+			count(s.id)
+		<include refid="sqlForListByDocId"></include>
+	</select>
+	
+	<select id="listAllByDocId" resultType="respSchema">
+		select
+			*
+		from
+			t_resp_schema
+		where
+			doc_id = #{docId}
+	</select>
+</mapper>

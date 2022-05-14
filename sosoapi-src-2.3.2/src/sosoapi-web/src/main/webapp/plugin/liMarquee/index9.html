@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>jQuery无缝滚动插件liMarquee演示-鼠标悬停不暂停_dowebok</title>
+<link rel="stylesheet" href="css/liMarquee.css">
+<style>
+.dowebok { width: 790px; margin: 150px auto; font-size: 14px;}
+.dowebok a { margin: 0 15px; color: #333; text-decoration: none;}
+.dowebok a:hover { text-decoration: underline;}
+</style>
+</head>
+
+<body>
+<h1>鼠标悬停不暂停</h1>
+
+<div class="dowebok">
+	<a href="http://www.dowebok.com/187.html">Smoothslides – 可平移的jQuery幻灯片插件</a>
+	<a href="http://www.dowebok.com/77.html">jQuery全屏滚动插件fullPage.js</a>
+	<a href="http://www.dowebok.com/131.html">WOW.js – 让页面滚动更有趣</a>
+	<a href="http://www.dowebok.com/139.html">让IE7 IE8支持CSS3 background-size属性</a>
+	<a href="http://www.dowebok.com/117.html">shCircleLoader – jQuery Loading效果插件</a>
+</div>
+
+<script src="js/jquery-1.8.3.min.js"></script>
+<script src="js/jquery.liMarquee.js"></script>
+<script>
+$(function(){
+	$('.dowebok').liMarquee({
+		hoverstop: false
+	});
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+<!-- 以下信息与演示无关，可不必理会 -->
+<style>
+body { margin: 0; border-left: 200px solid #ccc;}
+
+h1 { margin: 40px auto; font: 32px "Microsoft Yahei"; text-align: center;}
+
+.menu { position: absolute; left: 0; top: 0; bottom: 0; width: 200px; padding-top: 100px; font-family: Consolas,arial,"宋体"; background-color: #ccc;}
+.menu a { display: block; height: 40px; margin: 0 0 1px 2px; padding-left: 10px; line-height: 40px; font-size: 14px; color: #333; text-decoration: none;}
+.menu a:hover { background-color: #eee;}
+.menu .cur { color: #000; background-color: #fff !important;}
+
+.vad { margin: 50px 0 10px; font-family: Consolas,arial,宋体,sans-serif; text-align:center;}
+.vad a { display: inline-block; height: 36px; line-height: 36px; margin: 0 5px; padding: 0 50px; font-size: 14px; text-align:center; color:#eee; text-decoration: none; background-color: #222;}
+.vad a:hover { color: #fff; background-color: #000;}
+.thead { width: 728px; height: 90px; margin: 0 auto; border-bottom: 40px solid transparent;}
+
+.code { position: relative; margin-top: 100px; padding-top: 41px;}
+.code h3 { position: absolute; top: 0; z-index: 10; width: 100px; height: 40px; font: 16px/40px "Microsoft Yahei"; text-align: center; cursor: pointer;}
+.code .cur { border: 1px solid #f0f0f0; border-bottom: 1px solid #f8f8f8; background-color: #f8f8f8;}
+.code .h31 { left: 0;}
+.code .h32 { left: 102px;}
+.code .h33 { left: 204px;}
+.code .h34 { left: 306px;}
+.code ol { padding: 0;}
+.code { width: 800px; margin-left: auto; margin-right: auto;}
+pre { padding: 15px 0; border: 1px solid #f0f0f0; background-color: #f8f8f8;}
+.f-dn { display: none;}
+</style>
+
+<p class="vad">
+	<a href="http://www.dowebok.com/" target="_blank">dowebok.com</a>
+	<a href="http://www.dowebok.com/188.html" target="_blank">说 明</a>
+	<a href="http://www.dowebok.com/188.html" target="_blank">下 载</a>
+</p>
+
+<div class="menu">
+	<a href="index.html">1、默认效果</a>
+	<a href="index2.html">2、向右滚动</a>
+	<a href="index3.html">3、向上滚动</a>
+	<a href="index4.html">4、向下滚动</a>
+	<a href="index5.html">5、滚动速度</a>
+	<a href="index6.html">6、非无缝滚动</a>
+	<a href="index7.html">7、禁止拖动</a>
+	<a href="index8.html">8、内容不足不滚动</a>
+	<a class="cur" href="index9.html">9、鼠标悬停不暂停</a>
+	<a href="index10.html">10、反向</a>
+	<a href="index11.html">11、自定义事件</a>
+	<a href="index12.html">12、图片演示</a>
+</div>
+
+</body>
+</html>

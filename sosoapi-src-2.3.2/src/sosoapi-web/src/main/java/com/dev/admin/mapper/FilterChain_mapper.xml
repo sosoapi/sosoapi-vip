@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.admin.dao.FilterChainDao">
+	<insert id="add" parameterType="filterChain" useGeneratedKeys="true" keyProperty="id">
+		insert into t_filter_chain
+			(
+				create_date,
+				modify_date,
+				name,
+				url,
+				filter,
+				status,
+				sort_weight,
+				description,
+				position
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{name},
+				#{url},
+				#{filter},
+				#{status},
+				#{sortWeight},
+				#{description},
+				#{position}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="filterChain">
+		update t_filter_chain
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="url != null and '' != url"> url = #{url},</if>
+			<if test="filter != null and '' != filter"> filter = #{filter},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="position != null and '' != position"> position = #{position},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_filter_chain
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="filterChain">
+		select
+			*
+		from
+			t_filter_chain
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			t_filter_chain
+		<where>
+			<if test="name != null and '' != name">
+			and
+				name like #{name}
+			</if>
+			<if test="url != null and '' != url">
+			and
+				url like #{url}
+			</if>
+			<if test="filter != null and '' != filter">
+			and
+				filter like #{filter}
+			</if>
+			<if test="status != null and '' != status">
+			and
+				status = #{status}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="list" resultType="filterChain">
+		select
+			*
+		<include refid="sqlForList"></include>
+		order by
+			sort_weight asc
+		<if test="pager != null">
+		limit
+			#{pager.start},#{pager.pageSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForList"></include>
+	</select>
+	
+	<select id="listByPostion" resultType="filterChain">
+		select
+			*
+		from
+			t_filter_chain
+		<where>
+			<if test="status != null and '' != status">
+			and
+				status = #{status}
+			</if>
+			
+			<if test="position != null and '' != position">
+			and
+				position = #{position}
+			</if>
+		</where>
+		order by
+			position asc,sort_weight asc
+	</select>
+</mapper>

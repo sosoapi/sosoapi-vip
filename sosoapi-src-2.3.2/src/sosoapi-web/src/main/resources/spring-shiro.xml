@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache" 
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/cache 
+	http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- 加载配置文件 -->
+	<context:property-placeholder location="classpath:cfg.properties" ignore-unresolvable="true" />
+	
+	<!-- 自定义密码加解密算法 -->
+	<bean id="custPasswordService" class="com.dev.base.shiro.authc.credential.CustPasswordService"></bean>
+	
+	<!-- 自定义密码匹配器 -->
+	<bean id="custCredentialsMatcher" class="com.dev.base.shiro.authc.credential.CustCredentialsMatcher">
+		<property name="passwordService" ref="custPasswordService"></property>
+	</bean>
+
+	<!-- 自定义realm -->
+	<bean id="custJdbcRealm" class="com.dev.base.shiro.realm.CustJdbcRealm">
+		<property name="credentialsMatcher" ref="custCredentialsMatcher"></property>
+	</bean>
+
+	<!-- rememberMe cookie -->
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="${shiro.rememberme.cookie.name}"/>
+        <property name="httpOnly" value="true"/>
+        <!-- 30天 -->
+        <property name="maxAge" value="${shiro.rememberme.cookie.maxage}"/>
+        <!-- 配置存储Session Cookie的domain为 一级域名 -->
+	    <!-- <property name="domain" value="${shiro.rememberme.cookie.domain}"/> -->
+	    <property name="path" value="${shiro.rememberme.cookie.path}"/>
+    </bean>
+    
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）-->
+        <property name="cipherKey"
+                  value="#{T(org.apache.shiro.codec.Base64).decode('${shiro.rememberme.cipher.key}')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+    
+    <!-- ehcache 缓存，减少授权信息请求，单服务器环境-->
+	<bean id="ehcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">  
+        <property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>  
+    </bean> 
+    
+    <!-- redis 缓存，减少授权信息请求，集群环境 -->
+    <!-- redis相关配置 -->
+	<!-- <bean id="redisManager" class="org.crazycake.shiro.RedisManager">
+		<property name="host" value="${redis.host}"/>
+		<property name="port" value="${redis.port}"/>
+		<property name="password" value="${redis.password}"/>
+		<property name="expire" value="1800"/>
+		<property name="timeout" value="10000"/>
+	</bean> -->
+	<!-- cacheManager -->
+	<!-- <bean id="redisCacheManager" class="org.crazycake.shiro.RedisCacheManager">
+		<property name="redisManager" ref="redisManager" />
+	</bean> -->
+	
+	<!-- 不托管session(spring-session处理)，故无需启用session相关配置 -->
+	<!-- redisSessionDAO -->
+	<!-- <bean id="redisSessionDAO" class="org.crazycake.shiro.RedisSessionDAO">
+		<property name="redisManager" ref="redisManager" />
+	</bean> -->
+	<!-- sessionManager -->
+	<!-- <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="sessionDAO" ref="redisSessionDAO" />
+	</bean> -->
+    
+	<!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="custJdbcRealm"/>
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+        <!-- ehcache缓存配置 -->
+        <property name="cacheManager" ref="ehcacheManager"/>
+        
+        <!-- redis缓存配置 -->
+        <!-- 不托管session，故无需配置sessionManager -->
+        <!-- <property name="sessionManager" ref="sessionManager" /> -->
+		<!-- <property name="cacheManager" ref="redisCacheManager" /> -->
+    </bean>
+    
+	<!-- 静态注入securityManager，相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	    <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+	    <property name="arguments" ref="securityManager"/>
+	</bean>
+	
+	<!-- 自定义shiro filter -->
+	<bean id="anyRoleFilter" class="com.dev.base.shiro.filter.AnyRoleFilter"></bean>
+	<bean id="custUserFilter" class="com.dev.base.shiro.filter.CustUserFilter"></bean>
+	
+	<!-- web过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/forwardLogin.htm"/>
+		<property name="unauthorizedUrl" value="/pass/error/403.htm" />
+		
+		<property name="filters">
+           <util:map>
+              <entry key="anyRole" value-ref="anyRoleFilter"></entry>
+              <entry key="user" value-ref="custUserFilter"></entry>
+           </util:map>
+       	</property>
+       
+       	<!-- 由filterChainDefinitionsService加载实现 -->
+      	<!-- <property name="filterChainDefinitions">
+            <value>
+            	/admin/** = authc, roles[admin]
+            	/auth/** = user
+            </value>
+        </property> -->
+    </bean>
+
+	<!-- 自定义权限过滤链加载服务，支持数据库权限和当前配置文件配置，数据库由表t_filter_chain加载 -->
+	<bean id="filterChainDefinitionsService" class="com.dev.base.shiro.service.impl.JdbcFilterChainDefinitionsServiceImpl">
+	</bean>
+
+    <!-- Shiro生命周期处理器-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    
+    <!-- shiro注解,只能配置在spring-mvc.xml中-->
+    <!-- <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+	    <property name="securityManager" ref="securityManager"/>
+	</bean> -->
+</beans>
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.book.dao.BookContentDao">
+	<insert id="add" parameterType="bookContent" useGeneratedKeys="true" keyProperty="id">
+		insert into t_book_content
+			(
+				create_date,
+				modify_date,
+				book_id,
+				type,
+				rich_text_content,
+				markdown_content,
+				html_content
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{bookId},
+				#{type},
+				#{richTextContent},
+				#{markdownContent},
+				#{htmlContent}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="bookContent">
+		update t_book_content
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="richTextContent != null"> rich_text_content = #{richTextContent},</if>
+			<if test="markdownContent != null"> markdown_content = #{markdownContent},</if>
+			<if test="htmlContent != null"> html_content = #{htmlContent},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<update id="updateByBookId" parameterType="bookContent">
+		update t_book_content
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="richTextContent != null"> rich_text_content = #{richTextContent},</if>
+			<if test="markdownContent != null"> markdown_content = #{markdownContent},</if>
+			<if test="htmlContent != null"> html_content = #{htmlContent},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			book_id = #{bookId}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_book_content
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="bookContent">
+		select
+			*
+		from
+			t_book_content
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByBookId" resultType="bookContent">
+		select
+			*
+		from
+			t_book_content
+		where
+			id = #{contentId}
+		and
+			book_id = #{bookId}
+	</select>
+	
+	<select id="getHtmlContent" resultType="string">
+		select
+			html_content
+		from
+			t_book_content
+		where
+			id = #{contentId}
+		and
+			book_id = #{bookId}
+	</select>
+</mapper>

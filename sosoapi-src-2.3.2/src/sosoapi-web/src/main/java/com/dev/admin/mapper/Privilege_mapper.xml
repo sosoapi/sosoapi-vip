@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.admin.dao.PrivilegeDao">
+	<insert id="add" parameterType="privilege" useGeneratedKeys="true" keyProperty="id">
+		insert into t_privilege
+			(
+				create_date,
+				modify_date,
+				name,
+				code,
+				scope,
+				url,
+				type,
+				parent_id,
+				permission,
+				status,
+				access_verify,
+				sort_weight,
+				dis_position,
+				icon_class,
+				description,
+				img_url
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{name},
+				#{code},
+				#{scope},
+				#{url},
+				#{type},
+				#{parentId},
+				#{permission},
+				#{status},
+				#{accessVerify},
+				#{sortWeight},
+				#{disPosition},
+				#{iconClass},
+				#{description},
+				#{imgUrl}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="privilege">
+		update t_privilege
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="scope != null and '' != scope"> scope = #{scope},</if>
+			<if test="url != null and '' != url"> url = #{url},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="parentId != null"> parent_id = #{parentId},</if>
+			<if test="permission != null and '' != permission"> permission = #{permission},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="accessVerify != null"> access_verify = #{accessVerify},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="disPosition != null and '' != disPosition"> dis_position = #{disPosition},</if>
+			<if test="iconClass != null"> icon_class = #{iconClass},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="imgUrl != null and '' != imgUrl"> img_url = #{imgUrl},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_privilege
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="privilege">
+		select
+			*
+		from
+			t_privilege
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			t_privilege p1
+		left join
+			t_privilege p2
+		on
+			p1.parent_id = p2.id
+		<where>
+			<if test="name != null and '' != name">
+			and
+				p1.name like #{name}
+			</if>
+			<if test="url != null and '' != url">
+			and
+				p1.url like #{url}
+			</if>
+			<if test="type != null and '' != type">
+			and
+				p1.type = #{type}
+			</if>
+			<if test="status != null and '' != status">
+			and
+				p1.status = #{status}
+			</if>
+			<if test="accessVerify != null">
+			and
+				p1.access_verify = #{accessVerify}
+			</if>
+			<if test="parentId != null">
+			and
+				p1.parent_id = #{parentId}
+			</if>
+			
+			<if test="scope != null and scope != ''">
+				<choose>
+					<when test="scope == 'user'">
+						and
+							p1.scope in ('user','common')
+					</when>
+					<when test="scope == 'proj'">
+						and
+							p1.scope in ('proj','common')
+					</when>
+					<otherwise>
+						and
+							p1.scope = 'common'
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</sql>
+	
+	<select id="list" resultType="map">
+		select
+			p1.id,
+			p1.code,
+			p1.name,
+			p1.url,
+			p1.type,
+			p1.parent_id,
+			p1.img_url,
+			p2.name as parent_name,
+			p2.code as parent_code,
+			p1.permission,
+			p1.access_verify,
+			p1.status,
+			p1.create_date,
+			p1.sort_weight,
+			p1.scope
+		<include refid="sqlForList"></include>
+		order by
+			ifnull(p2.sort_weight,0),p1.sort_weight asc
+		<if test="pager != null">
+		limit
+			#{pager.start},#{pager.pageSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="int">
+		select
+			count(p1.id)
+		<include refid="sqlForList"></include>
+	</select>
+	
+	<select id="listByRoleId" resultType="map">
+		select
+			p1.id,
+			p1.name,
+			p1.code,
+			p1.type,
+			p1.parent_id,
+			p1.url,
+			p2.code as parent_code,
+			p2.name as parent_name,
+			p1.permission,
+			p1.status,
+			p1.access_verify,
+			p1.icon_class,
+			p1.img_url
+		from
+			t_role_privilege rp
+		inner join
+			t_privilege p1
+		on
+			rp.privilege_id = p1.id
+		left join
+			t_privilege p2
+		on	
+			p1.parent_id = p2.id
+		where
+			rp.role_id = #{roleId}
+		and
+			p1.scope in ('user','common')
+		<if test="status != null and '' != status">
+		and
+			p1.status = #{status}
+		</if>
+		<if test="accessVerify != null">
+		and
+			p1.access_verify = #{accessVerify}
+		</if>
+		order by
+			ifnull(p2.sort_weight,0) asc,p1.sort_weight asc
+	</select>
+	
+	<select id="listPermByRoleId" resultType="string">
+		select
+			p.permission
+		from
+			t_role_privilege rp
+		inner join
+			t_privilege p
+		on
+			rp.privilege_id = p.id
+		where
+			rp.role_id = #{roleId}
+		and
+			p.status = 'on'
+		and
+			p.access_verify = 1
+		and
+			p.scope in ('user','common')
+	</select>
+	
+	<select id="listParent" resultType="privilege">
+		select
+			id,
+			name,
+			status,
+			type
+		from
+			t_privilege
+		where
+			type = 'cate'
+		<if test="status != null and '' != status">
+		and
+			status = #{status}
+		</if>
+		
+		<if test="scope != null and scope != ''">
+			<choose>
+				<when test="scope == 'user'">
+					and
+						scope in ('user','common')
+				</when>
+				<when test="scope == 'proj'">
+					and
+						scope in ('proj','common')
+				</when>
+				<otherwise>
+					and
+						scope = 'common'
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+	
+	<select id="listAll" resultType="privilege">
+		select
+			*
+		from
+			t_privilege
+		<where>
+			<if test="type != null and '' != type">
+			and
+				type = #{type}
+			</if>
+			<if test="status != null and '' != status">
+			and
+				status = #{status}
+			</if>
+			<if test="accessVerify != null">
+			and
+				access_verify = #{accessVerify}
+			</if>
+			<if test="parentId != null">
+			and
+				parent_id = #{parentId}
+			</if>
+			
+			<if test="scope != null and scope != ''">
+				<choose>
+					<when test="scope == 'user'">
+						and
+							scope in ('user','common')
+					</when>
+					<when test="scope == 'proj'">
+						and
+							scope in ('proj','common')
+					</when>
+					<otherwise>
+						and
+							scope = 'common'
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		order by
+			parent_id asc,sort_weight asc
+	</select>
+	
+	<select id="listTreeByRoleId" resultType="map">
+		select
+			p.id,
+			p.name,
+			p.type,
+			p.parent_id,
+			p.icon_class,
+			p.img_url,
+			rp.id as relation_id
+		from
+			t_privilege p
+		left join
+			t_role_privilege rp
+		on
+			(	p.id = rp.privilege_id 
+			and
+				rp.role_id = #{roleId})
+		where
+			p.status = 'on'
+		and
+			p.scope in ('user','common')
+		order by
+			p.sort_weight asc,p.create_date desc
+	</select>
+</mapper>

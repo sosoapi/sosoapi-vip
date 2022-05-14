@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+    	<!-- 项目相关 -->
+   		<typeAlias type="com.dev.proj.entity.Project" alias="project"/>
+   		<typeAlias type="com.dev.proj.entity.ProjectMember" alias="projectMember"/>
+   		<typeAlias type="com.dev.proj.entity.ProjectRole" alias="projectRole"/>
+   		<typeAlias type="com.dev.proj.entity.ProjectLog" alias="projectLog"/>
+   		
+   		<!-- 项目文档相关 -->
+   		<typeAlias type="com.dev.doc.entity.ApiDoc" alias="apiDoc"/>
+   		<typeAlias type="com.dev.doc.entity.ApiEnv" alias="apiEnv"/>
+   		<typeAlias type="com.dev.doc.entity.Inter" alias="inter"/>
+   		<typeAlias type="com.dev.doc.entity.InterParam" alias="interParam"/>
+   		<typeAlias type="com.dev.doc.entity.InterResp" alias="interResp"/>
+   		<typeAlias type="com.dev.doc.entity.Module" alias="module"/>
+   		<typeAlias type="com.dev.doc.entity.RespSchema" alias="respSchema"/>
+   		<typeAlias type="com.dev.doc.entity.ApiErrorCode" alias="apiErrorCode"/>
+   		<typeAlias type="com.dev.doc.entity.DocView" alias="docView"/>
+   		<typeAlias type="com.dev.doc.entity.DocViewRes" alias="docViewRes"/>
+   		<typeAlias type="com.dev.doc.entity.DocArchive" alias="docArchive"/>
+   		
+   		<!-- 用户相关 -->
+   		<typeAlias type="com.dev.user.entity.UserBasic" alias="userBasic"/>
+   		<typeAlias type="com.dev.user.entity.UserExt" alias="userExt"/>
+   		<typeAlias type="com.dev.user.entity.UserDetail" alias="userDetail"/>
+   		<typeAlias type="com.dev.user.entity.UserLogin" alias="userLogin"/>
+   		<typeAlias type="com.dev.user.entity.UserToken" alias="userToken"/>
+   		<typeAlias type="com.dev.user.entity.Suggest" alias="suggest"/>
+   		<typeAlias type="com.dev.user.entity.UserMsg" alias="userMsg"/>
+   		
+   		<!-- 管理员相关 -->
+   		<typeAlias type="com.dev.admin.entity.SysMsg" alias="sysMsg"/>
+   		<typeAlias type="com.dev.admin.entity.UserCube" alias="userCube"/>
+   		<typeAlias type="com.dev.admin.entity.Role" alias="role"/>
+   		<typeAlias type="com.dev.admin.entity.Privilege" alias="privilege"/>
+   		<typeAlias type="com.dev.admin.entity.FilterChain" alias="filterChain"/>
+   		<typeAlias type="com.dev.admin.entity.SysCfg" alias="sysCfg"/>
+   		
+   		<!-- 订单相关 -->
+   		<typeAlias type="com.dev.order.entity.Order" alias="order"/>
+   		<typeAlias type="com.dev.order.entity.OrderItem" alias="orderItem"/>
+   		<typeAlias type="com.dev.order.entity.Refund" alias="refund"/>
+   		<typeAlias type="com.dev.order.entity.RefundItem" alias="refundItem"/>
+   		<typeAlias type="com.dev.order.entity.PayNotify" alias="payNotify"/>
+   		<typeAlias type="com.dev.order.entity.InvoiceApply" alias="invoiceApply"/>
+   		
+   		<!-- 商品相关 -->
+   		<typeAlias type="com.dev.prod.entity.Goods" alias="goods"/>
+   		<typeAlias type="com.dev.prod.entity.DownloadRecord" alias="downloadRecord"/>
+   		
+   		<!-- 监控相关 -->
+   		<typeAlias type="com.dev.monitor.entity.AlarmGroup" alias="alarmGroup"/>
+   		<typeAlias type="com.dev.monitor.entity.AlarmLog" alias="alarmLog"/>
+   		<typeAlias type="com.dev.monitor.entity.AlarmReceiver" alias="alarmReceiver"/>
+   		<typeAlias type="com.dev.monitor.entity.HttpMonitor" alias="httpMonitor"/>
+   		<typeAlias type="com.dev.monitor.entity.MonitorLog" alias="monitorLog"/>
+   		
+   		<!-- 书籍相关 -->
+   		<typeAlias type="com.dev.book.entity.Book" alias="book"/>
+   		<typeAlias type="com.dev.book.entity.BookChapter" alias="bookChapter"/>
+   		<typeAlias type="com.dev.book.entity.BookContent" alias="bookContent"/>
+    </typeAliases>
+</configuration>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.CommonParamDao">
+	<insert id="add" parameterType="interParam" useGeneratedKeys="true" keyProperty="id">
+		insert into t_common_param
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				code,
+				name,
+				description,
+				type,
+				format,
+				position,
+				required,
+				cust_schema,
+				ext_schema,
+				ref_schema_id,
+				def_value,
+				sort_weight
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{code},
+				#{name},
+				#{description},
+				#{type},
+				#{format},
+				#{position},
+				#{required},
+				#{custSchema},
+				#{extSchema},
+				#{refSchemaId},
+				#{defValue},
+				#{sortWeight}
+			)	
+	</insert>
+	
+	<select id="listByDocId" resultType="interParam">
+		select
+			*
+		from
+			t_common_param
+		where
+			doc_id = #{docId}
+		order by
+			sort_weight asc
+	</select>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_common_param 
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				code,
+				name,
+				description,
+				type,
+				format,
+				position,
+				required,
+				cust_schema,
+				ext_schema,
+				ref_schema_id,
+				def_value,
+				sort_weight
+			)   
+    	values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.docId},
+				#{item.code},
+				#{item.name},
+				#{item.description},
+				#{item.type},
+				#{item.format},
+				#{item.position},
+				#{item.required},
+				#{item.custSchema},
+				#{item.extSchema},
+				#{item.refSchemaId},
+				#{item.defValue},
+				#{item.sortWeight}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<delete id="batchDelByDocId">
+		delete from
+			t_common_param
+		where
+			doc_id = #{docId}
+	</delete>
+	
+	<insert id="cloneByDocId">
+		insert into t_common_param
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				code,
+				name,
+				description,
+				type,
+				format,
+				position,
+				required,
+				cust_schema,
+				ext_schema,
+				ref_schema_id,
+				def_value,
+				sort_weight
+			)
+    	select
+    		now(),
+			now(),
+			#{cloneDocId},
+			code,
+			name,
+			description,
+			type,
+			format,
+			position,
+			required,
+			cust_schema,
+			ext_schema,
+			ref_schema_id,
+			def_value,
+			sort_weight
+		from
+			t_common_param
+		where
+			doc_id = #{srcDocId}
+	</insert>
+</mapper>

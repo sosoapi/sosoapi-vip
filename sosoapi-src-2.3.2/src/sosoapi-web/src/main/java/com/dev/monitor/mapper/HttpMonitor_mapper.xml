@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.monitor.dao.HttpMonitorDao">
+	<insert id="add" parameterType="httpMonitor" useGeneratedKeys="true" keyProperty="id">
+		insert into t_monitor_http
+			(
+				create_date,
+				modify_date,
+				user_id,
+				description,
+				status,
+				name,
+				sub,
+				sub_status,
+				rate,
+				req_method,
+				resp_content,
+				valid_resp,
+				req_param,
+				max_spend_time,
+				max_error_count,
+				max_alarm_count,
+				alarm_group_id,
+				alarm_count,
+				error_count,
+				resp_content_type
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{description},
+				#{status},
+				#{name},
+				#{sub},
+				#{subStatus},
+				#{rate},
+				#{reqMethod},
+				#{respContent},
+				#{validResp},
+				#{reqParam},
+				#{maxSpendTime},
+				#{maxErrorCount},
+				#{maxAlarmCount},
+				#{alarmGroupId},
+				#{alarmCount},
+				#{errorCount},
+				#{respContentType}
+			)	
+	</insert>
+	
+	<update id="updateByUserId" parameterType="httpMonitor">
+		update t_monitor_http
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="description != null"> description = #{description},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="sub != null and '' != sub"> sub = #{sub},</if>
+			<if test="subStatus != null"> sub_status = #{subStatus},</if>
+			<if test="rate != null"> rate = #{rate},</if>
+			<if test="reqMethod != null and '' != reqMethod"> req_method = #{reqMethod},</if>
+			<if test="respContent != null"> resp_content = #{respContent},</if>
+			<if test="validResp != null"> valid_resp = #{validResp},</if>
+			<if test="reqParam != null"> req_param = #{reqParam},</if>
+			<if test="maxSpendTime != null"> max_spend_time = #{maxSpendTime},</if>
+			<if test="maxErrorCount != null"> max_error_count = #{maxErrorCount},</if>
+			<if test="maxAlarmCount != null"> max_alarm_count = #{maxAlarmCount},</if>
+			<if test="alarmGroupId != null"> alarm_group_id = #{alarmGroupId},</if>
+			<if test="respContentType != null and '' != respContentType"> resp_content_type = #{respContentType},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			user_id = #{userId}
+	</update>
+	
+	<update id="update" parameterType="httpMonitor">
+		update t_monitor_http
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="subStatus != null"> sub_status = #{subStatus},</if>
+			<if test="respContent != null"> resp_content = #{respContent},</if>
+			<if test="alarmCount != null"> alarm_count = #{alarmCount},</if>
+			<if test="errorCount != null"> error_count = #{errorCount},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<sql id="sqlForListByUserId">
+		from
+			t_monitor_http
+		where
+			user_id = #{userId}
+		<if test="name != null and '' != name">
+		and
+			name like #{name}
+		</if>
+		<if test="sub != null and '' != sub">
+		and
+			sub like #{sub}
+		</if>
+		<if test="subStatus != null">
+		and
+			sub_status = #{subStatus}
+		</if>
+		<if test="status != null">
+		and
+			status = #{status}
+		</if>
+	</sql>
+	
+	<select id="listByUserId" resultType="httpMonitor">
+		select
+			*
+		<include refid="sqlForListByUserId"></include>
+		order by
+			modify_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByUserId" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForListByUserId"></include>
+	</select>
+	
+	<delete id="delByUserId" parameterType="long">
+		delete from
+			t_monitor_http
+		where
+			id = #{monitorId}
+		and
+			user_id = #{userId}
+	</delete>
+	
+	<select id="getByUserId" resultType="httpMonitor">
+		select
+			*
+		from
+			t_monitor_http
+		where
+			id = #{monitorId}
+		and
+			user_id = #{userId}
+	</select>
+	
+	<select id="listByRate" resultType="httpMonitor">
+		select
+			*
+		from
+			t_monitor_http
+		where
+			rate = #{rate}
+		<if test="status != null">
+		and
+			status = #{status}
+		</if>
+		order by
+			create_date asc
+		limit
+			0,#{size}
+	</select>
+	
+	<sql id="sqlForListAll">
+		from
+			t_monitor_http h
+		inner join
+			t_user_basic b
+		on
+			h.user_id = b.id
+		<where>
+			<if test="name != null and '' != name">
+			and
+				h.name like #{name}
+			</if>
+			
+			<if test="sub != null and '' != sub">
+			and
+				h.sub like #{sub}
+			</if>
+			
+			<if test="subStatus != null and '' != subStatus">
+			and
+				h.sub_status = #{subStatus}
+			</if>
+			
+			<if test="status != null and '' != status">
+			and
+				h.status = #{status}
+			</if>
+			
+			<if test="email != null and '' != email">
+			and
+				b.email like #{email}
+			</if>
+			
+			<if test="dateStart != null">
+			and
+				h.create_date >= #{dateStart}
+			</if>
+			
+			<if test="dateEnd != null">
+			and
+				h.create_date <![CDATA[ <= ]]> #{dateEnd}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listAll" resultType="map">
+		select
+			b.email,
+			h.id,
+			h.user_id,
+			h.name,
+			h.status,
+			h.sub,
+			h.sub_status,
+			h.rate,
+			h.create_date
+		<include refid="sqlForListAll"></include>
+		order by
+			h.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countAll" resultType="int">
+		select
+			count(h.id)
+		<include refid="sqlForListAll"></include>
+	</select>
+	
+	<update id="updateStatusForMgr">
+		update
+			t_monitor_http
+		set
+			status = #{status}
+		where
+			id = #{monitorId}
+	</update>
+</mapper>

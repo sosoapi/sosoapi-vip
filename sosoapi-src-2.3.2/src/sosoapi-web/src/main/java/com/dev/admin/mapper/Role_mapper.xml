@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.admin.dao.RoleDao">
+	<insert id="add" parameterType="role" useGeneratedKeys="true" keyProperty="id">
+		insert into t_role
+			(
+				id,
+				create_date,
+				modify_date,
+				name,
+				code,
+				status,
+				sort_weight,
+				del_disabled,
+				description,
+				home_url
+			)
+		values
+			(
+				#{id},
+				#{createDate},
+				#{modifyDate},
+				#{name},
+				#{code},
+				#{status},
+				#{sortWeight},
+				#{delDisabled},
+				#{description},
+				#{homeUrl}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="role">
+		update t_role
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="homeUrl != null and '' != homeUrl"> home_url = #{homeUrl},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_role
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="role">
+		select
+			*
+		from
+			t_role
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByUserId" resultType="role">
+		select
+			r.*
+		from
+			t_user_basic b
+		inner join
+			t_role r
+		on
+			b.role_id = r.id
+		where
+			b.id = #{userId}
+	</select>
+	
+	<sql id="sqlForList">
+		from
+			t_role
+		<where>
+			<if test="name != null and '' != name">
+			and
+				name like #{name}
+			</if>
+			<if test="code != null and '' != code">
+			and
+				code like #{code}
+			</if>
+			<if test="status != null and '' != status">
+			and
+				status = #{status}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="list" resultType="role">
+		select
+			*
+		<include refid="sqlForList"></include>
+		order by
+			sort_weight asc
+		<if test="pager != null">
+		limit
+			#{pager.start},#{pager.pageSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForList"></include>
+	</select>
+	
+	<insert id="batchAddPriv" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_role_privilege 
+			(
+				create_date,
+				modify_date,
+				role_id,
+				privilege_id
+			)   
+    	values  
+	    <foreach collection="idList" item="item" index="index" separator="," >  
+	        (	
+	        	now(),
+				now(),
+				#{roleId},
+				#{item}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<delete id="batchDelPriv">
+		delete from
+			t_role_privilege
+		where
+			role_id = #{roleId}
+	</delete>
+</mapper>

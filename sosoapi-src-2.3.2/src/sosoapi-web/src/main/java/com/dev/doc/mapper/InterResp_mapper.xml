@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.InterRespDao">
+	<insert id="add" parameterType="interResp" useGeneratedKeys="true" keyProperty="id">
+		insert into t_inter_resp
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				inter_id,
+				code,
+				name,
+				description,
+				type,
+				ref_schema_id,
+				def,
+				required,
+				cust_schema,
+				ext_schema,
+				sort_weight,
+				mock_data,
+				mock_rule,
+				mock_type
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{interId},
+				#{code},
+				#{name},
+				#{description},
+				#{type},
+				#{refSchemaId},
+				#{def},
+				#{required},
+				#{custSchema},
+				#{extSchema},
+				#{sortWeight},
+				#{mockData},
+				#{mockRule},
+				#{mockType}
+			)	
+	</insert>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_inter_resp 
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				inter_id,
+				code,
+				name,
+				description,
+				type,
+				ref_schema_id,
+				def,
+				required,
+				cust_schema,
+				ext_schema,
+				sort_weight,
+				mock_data,
+				mock_rule,
+				mock_type
+			)   
+    	values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.docId},
+				#{item.interId},
+				#{item.code},
+				#{item.name},
+				#{item.description},
+				#{item.type},
+				#{item.refSchemaId},
+				#{item.def},
+				#{item.required},
+				#{item.custSchema},
+				#{item.extSchema},
+				#{item.sortWeight},
+				#{item.mockData},
+				#{item.mockRule},
+				#{item.mockType}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<update id="updateByDocId" parameterType="interResp">
+		update t_inter_resp
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="refSchemaId != null and '' != refSchemaId"> ref_schema_id = #{refSchemaId},</if>
+			<if test="def != null"> def = #{def},</if>
+			<if test="required != null"> required = #{required},</if>
+			<if test="custSchema != null and '' != custSchema"> cust_schema = #{custSchema},</if>
+			<if test="extSchema != null and '' != extSchema"> ext_schema = #{extSchema},</if>
+			<if test="mockData != null and '' != mockData"> mock_data = #{mockData},</if>
+			<if test="mockRule != null and '' != mockRule"> mock_rule = #{mockRule},</if>
+			<if test="mockType != null and '' != mockType"> mock_type = #{mockType},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<delete id="deleteByDocId">
+		delete from
+			t_inter_resp
+		where
+			id = #{respId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="getById" resultType="interResp">
+		select
+			*
+		from
+			t_inter_resp
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByDocId" resultType="interResp">
+		select
+			*
+		from
+			t_inter_resp
+		where
+			id = #{respId}
+		and
+			doc_id = #{docId}
+	</select>
+	
+	<select id="listAllByInterId" resultType="interResp">
+		select
+			*
+		from
+			t_inter_resp
+		where
+			inter_id = #{interId}
+		and
+			doc_id = #{docId}
+		order by
+			sort_weight asc
+	</select>
+	
+	<select id="listAllByDocId" resultType="interResp">
+		select
+			*
+		from
+			t_inter_resp
+		where
+			doc_id = #{docId}
+		order by
+			id asc
+	</select>
+	
+	<delete id="deleteByDocIdAndInterId">
+		delete from
+			t_inter_resp
+		where
+			inter_id = #{interId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="getByInterIdAndCode" resultType="interResp">
+		select
+			r.*,
+			if(def = 1 or code = '200' or code = 'default',1,0) as flag
+		from
+			t_inter_resp r
+		where
+			inter_id = #{interId}
+		and
+			doc_id = #{docId}
+		<if test="code != null and '' != code">
+		and
+			code = #{code}
+		</if>
+		order by
+			flag desc,modify_date desc
+		limit
+			0,1
+	</select>
+	
+	<update id="updateMockInfo">
+		update 
+			t_inter_resp
+		set
+			mock_data = #{mockData},
+			mock_rule = #{mockRule}
+		where
+			doc_id = #{docId}
+		and
+			id = #{respId}
+	</update>
+	
+	<update id="updateSortWeight">
+		update
+			t_inter_resp
+		set
+			sort_weight = #{sortWeight}
+		where
+			id = #{respId}
+		and
+			doc_id = #{docId}
+	</update>
+</mapper>
+

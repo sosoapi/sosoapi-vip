@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.DocViewResDao">
+	<insert id="add" parameterType="docViewRes" useGeneratedKeys="true" keyProperty="id">
+		insert into t_doc_view_resource
+			(
+				id,
+				create_date,
+				modify_date,
+				view_id,
+				doc_id,
+				type,
+				resource_id
+			)
+		values
+			(
+				#{id},
+				#{createDate},
+				#{modifyDate},
+				#{viewId},
+				#{docId},
+				#{type},
+				#{resourceId}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="docViewRes">
+		update t_doc_view_resource
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="viewId != null"> view_id = #{viewId},</if>
+			<if test="docId != null"> doc_id = #{docId},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="resourceId != null"> resource_id = #{resourceId},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_doc_view_resource
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="docViewRes">
+		select
+			*
+		from
+			t_doc_view_resource
+		where
+			id = #{id}
+	</select>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_doc_view_resource 
+			(
+				create_date,
+				modify_date,
+				view_id,
+				doc_id,
+				type,
+				resource_id
+			)   
+    	values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.viewId},
+				#{item.docId},
+				#{item.type},
+				#{item.resourceId}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<delete id="batchDel">
+		delete from
+			t_doc_view_resource
+		where
+			view_id = #{viewId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="listAll" resultType="docViewRes">
+		select
+			id,
+			type,
+			resource_id
+		from
+			t_doc_view_resource
+		where
+			doc_id = #{docId}
+		and
+			view_id = #{viewId}
+	</select>
+</mapper>

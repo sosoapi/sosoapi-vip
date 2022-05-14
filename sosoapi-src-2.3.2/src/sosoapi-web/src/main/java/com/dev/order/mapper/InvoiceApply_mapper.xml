@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.order.dao.InvoiceApplyDao">
+	<insert id="add" parameterType="invoiceApply" useGeneratedKeys="true" keyProperty="id">
+		insert into t_invoice_apply
+			(
+				create_date,
+				modify_date,
+				user_id,
+				type,
+				product_name,
+				total_amount,
+				company_name,
+				company_tax_no,
+				company_addr,
+				company_tel,
+				company_bank_name,
+				company_bank_account,
+				mailing_addr,
+				receiver_name,
+				receiver_tel,
+				apply_remark,
+				deal_status,
+				deal_date,
+				deal_user_id,
+				mailing_serv_name,
+				mailing_no,
+				mailing_date,
+				remark
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{type},
+				#{productName},
+				#{totalAmount},
+				#{companyName},
+				#{companyTaxNo},
+				#{companyAddr},
+				#{companyTel},
+				#{companyBankName},
+				#{companyBankAccount},
+				#{mailingAddr},
+				#{receiverName},
+				#{receiverTel},
+				#{applyRemark},
+				#{dealStatus},
+				#{dealDate},
+				#{dealUserId},
+				#{mailingServName},
+				#{mailingNo},
+				#{mailingDate},
+				#{remark}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="invoiceApply">
+		update t_invoice_apply
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="userId != null"> user_id = #{userId},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="productName != null"> product_name = #{productName},</if>
+			<if test="totalAmount != null"> total_amount = #{totalAmount},</if>
+			<if test="companyName != null"> company_name = #{companyName},</if>
+			<if test="companyTaxNo != null"> company_tax_no = #{companyTaxNo},</if>
+			<if test="companyAddr != null"> company_addr = #{companyAddr},</if>
+			<if test="companyTel != null"> company_tel = #{companyTel},</if>
+			<if test="companyBankName != null"> company_bank_name = #{companyBankName},</if>
+			<if test="companyBankAccount != null"> company_bank_account = #{companyBankAccount},</if>
+			<if test="mailingAddr != null"> mailing_addr = #{mailingAddr},</if>
+			<if test="receiverName != null"> receiver_name = #{receiverName},</if>
+			<if test="receiverTel != null"> receiver_tel = #{receiverTel},</if>
+			<if test="applyRemark != null"> apply_remark = #{applyRemark},</if>
+			<if test="dealStatus != null"> deal_status = #{dealStatus},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<update id="updateByUserId" parameterType="invoiceApply">
+		update t_invoice_apply
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="productName != null"> product_name = #{productName},</if>
+			<if test="totalAmount != null"> total_amount = #{totalAmount},</if>
+			<if test="companyName != null"> company_name = #{companyName},</if>
+			<if test="companyTaxNo != null"> company_tax_no = #{companyTaxNo},</if>
+			<if test="companyAddr != null"> company_addr = #{companyAddr},</if>
+			<if test="companyTel != null"> company_tel = #{companyTel},</if>
+			<if test="companyBankName != null"> company_bank_name = #{companyBankName},</if>
+			<if test="companyBankAccount != null"> company_bank_account = #{companyBankAccount},</if>
+			<if test="mailingAddr != null"> mailing_addr = #{mailingAddr},</if>
+			<if test="receiverName != null"> receiver_name = #{receiverName},</if>
+			<if test="receiverTel != null"> receiver_tel = #{receiverTel},</if>
+			<if test="applyRemark != null"> apply_remark = #{applyRemark},</if>
+			<if test="dealStatus != null"> deal_status = #{dealStatus},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			user_id = #{userId}
+	</update>
+	
+	<delete id="delByUserId">
+		delete from
+			t_invoice_apply
+		where
+			id = #{applyId}
+		<if test="userId != null">
+		and
+			user_id = #{userId}
+		</if>
+	</delete>
+	
+	<select id="getByUserId" resultType="invoiceApply">
+		select
+			*
+		from
+			t_invoice_apply
+		where
+			id = #{applyId}
+		<if test="userId != null">
+		and
+			user_id = #{userId}
+		</if>
+	</select>
+	
+	<select id="getById" resultType="invoiceApply">
+		select
+			*
+		from
+			t_invoice_apply
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForListByUserId">
+		from
+			t_invoice_apply a
+		inner join
+			t_user_basic b
+		on
+			a.user_id = b.id
+		<where>
+			<if test="userId != null">
+			and
+				a.user_id = #{userId}
+			</if>
+			<if test="email != null and '' != email">
+			and
+				b.email like #{email}
+			</if>
+			<if test="companyName != null and '' != companyName">
+			and
+				a.company_name like #{companyName}
+			</if>
+			<if test="dealStatus != null and '' != dealStatus">
+			and
+				a.deal_status = #{dealStatus}
+			</if>
+			<if test="type != null and '' != type">
+			and
+				a.type = #{type}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listByUserId" resultType="map">
+		select
+			a.id as apply_id,
+			a.user_id,
+			a.type,
+			a.product_name,
+			a.total_amount,
+			a.company_name,
+			a.deal_status,
+			a.deal_date,
+			a.create_date,
+			a.modify_date,
+			b.email as user_email
+		<include refid="sqlForListByUserId"></include>
+		order by
+			a.modify_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByUserId" resultType="int">
+		select
+			count(a.id)
+		<include refid="sqlForListByUserId"></include>
+	</select>
+	
+	<update id="submitByUserId">
+		update 
+			t_invoice_apply
+		set
+			deal_status = 'dealing',
+			modify_date = now(),
+			remark = ''
+		where
+			id = #{applyId}
+		<if test="userId != null">
+		and
+			user_id = #{userId}
+		</if>
+	</update>
+	
+	<update id="approve" parameterType="invoiceApply">
+		update t_invoice_apply
+		<set>
+			<if test="dealStatus != null"> deal_status = #{dealStatus},</if>
+			<if test="dealDate != null"> deal_date = #{dealDate},</if>
+			<if test="dealUserId != null"> deal_user_id = #{dealUserId},</if>
+			<if test="mailingServName != null"> mailing_serv_name = #{mailingServName},</if>
+			<if test="mailingNo != null"> mailing_no = #{mailingNo},</if>
+			<if test="mailingDate != null"> mailing_date = #{mailingDate},</if>
+			<if test="remark != null"> remark = #{remark},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<select id="countForDealing" resultType="int">
+		select
+			count(id)
+		from
+			t_invoice_apply
+		where
+			user_id = #{userId}
+		and
+			deal_status = 'dealing'
+	</select>
+</mapper>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.monitor.dao.AlarmLogDao">
+	<insert id="add" parameterType="alarmLog" useGeneratedKeys="true" keyProperty="id">
+		insert into t_monitor_alarm_log
+			(
+				create_date,
+				modify_date,
+				user_id,
+				monitor_id,
+				monitor_type,
+				sub,
+				sub_status,
+				error_brief,
+				error_detail,
+				resp_content,
+				spend_time,
+				alarm_group_id,
+				monitor_log_id,
+				receiver_info
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{monitorId},
+				#{monitorType},
+				#{sub},
+				#{subStatus},
+				#{errorBrief},
+				#{errorDetail},
+				#{respContent},
+				#{spendTime},
+				#{alarmGroupId},
+				#{monitorLogId},
+				#{receiverInfo}
+			)	
+	</insert>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_monitor_alarm_log 
+			(
+				create_date,
+				modify_date,
+				user_id,
+				monitor_id,
+				monitor_type,
+				sub,
+				sub_status,
+				error_brief,
+				error_detail,
+				resp_content,
+				spend_time,
+				alarm_group_id,
+				monitor_log_id,
+				receiver_info
+			)   
+    	values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.userId},
+				#{item.monitorId},
+				#{item.monitorType},
+				#{item.sub},
+				#{item.subStatus},
+				#{item.errorBrief},
+				#{item.errorDetail},
+				#{item.respContent},
+				#{item.spendTime},
+				#{item.alarmGroupId},
+				#{item.monitorLogId},
+				#{item.receiverInfo}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<sql id="sqlForListByUserId">
+		from
+			t_monitor_alarm_log l
+		inner join
+			t_monitor_http h
+		on
+			(l.monitor_id = h.id and l.monitor_type = 'http')
+		<where>
+			<if test="userId != null">
+			and
+				l.user_id = #{userId}
+			</if>
+			<if test="name != null and '' != name">
+			and
+				h.name like #{name}
+			</if>
+			<if test="sub != null and '' != sub">
+			and
+				l.sub like #{sub}
+			</if>
+			<if test="subStatus != null">
+			and
+				l.sub_status = #{subStatus}
+			</if>
+			<if test="monitorType != null">
+			and
+				l.monitor_type = #{monitorType}
+			</if>
+			<if test="dateStart != null">
+			and
+				l.create_date >= #{dateStart}
+			</if>
+			
+			<if test="dateEnd != null">
+			and
+				l.create_date <![CDATA[ <= ]]> #{dateEnd}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listByUserId" resultType="map">
+		select
+			l.id,
+			l.user_id,
+			l.create_date,
+			l.monitor_id,
+			l.monitor_type,
+			l.sub,
+			l.sub_status,
+			l.spend_time,
+			h.id as monitor_id,
+			h.name as monitor_name
+		<include refid="sqlForListByUserId"></include>
+		order by
+			l.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByUserId" resultType="int">
+		select
+			count(l.id)
+		<include refid="sqlForListByUserId"></include>
+	</select>
+	
+	<select id="getByUserId" resultType="map">
+		select
+			l.*,
+			h.id as monitor_id,
+			h.name as monitor_name
+		from
+			t_monitor_alarm_log l
+		inner join
+			t_monitor_http h
+		on
+			l.monitor_id = h.id
+		where
+			l.id = #{logId}
+		and
+			l.user_id = #{userId}
+	</select>
+	
+	<sql id="sqlForListAll">
+		from
+			t_monitor_alarm_log l
+		inner join
+			t_monitor_http h
+		on
+			l.monitor_id = h.id
+		<where>
+			<if test="monitorName != null and '' != monitorName">
+			and
+				h.name like #{monitorName}
+			</if>
+			
+			<if test="sub != null and '' != sub">
+			and
+				l.sub like #{sub}
+			</if>
+			
+			<if test="dateStart != null">
+			and
+				l.create_date >= #{dateStart}
+			</if>
+			
+			<if test="dateEnd != null">
+			and
+				l.create_date <![CDATA[ <= ]]> #{dateEnd}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listAll" resultType="map">
+		select
+			l.id,
+			l.monitor_id,
+			l.sub,
+			l.spend_time,
+			l.create_date,
+			h.name as monitor_name
+		<include refid="sqlForListAll"></include>
+		order by
+			l.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countAll" resultType="int">
+		select
+			count(l.id)
+		<include refid="sqlForListAll"></include>
+	</select>
+</mapper>

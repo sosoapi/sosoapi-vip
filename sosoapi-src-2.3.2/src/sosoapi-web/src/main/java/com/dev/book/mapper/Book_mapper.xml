@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.book.dao.BookDao">
+	<insert id="add" parameterType="book" useGeneratedKeys="true" keyProperty="id">
+		insert into t_book
+			(
+				create_date,
+				modify_date,
+				user_id,
+				proj_id,
+				title,
+				brief,
+				tag,
+				open,
+				share,
+				share_password,
+				share_url,
+				cover_url,
+				read_count,
+				sort_weight,
+				pub_status
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{projId},
+				#{title},
+				#{brief},
+				#{tag},
+				#{open},
+				#{share},
+				#{sharePassword},
+				#{shareUrl},
+				#{coverUrl},
+				#{readCount},
+				#{sortWeight},
+				#{pubStatus}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="book">
+		update t_book
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="projId != null"> proj_id = #{projId},</if>
+			<if test="title != null and '' != title"> title = #{title},</if>
+			<if test="brief != null"> brief = #{brief},</if>
+			<if test="tag != null"> tag = #{tag},</if>
+			<if test="open != null"> open = #{open},</if>
+			<if test="share != null"> share = #{share},</if>
+			<if test="sharePassword != null"> share_password = #{sharePassword},</if>
+			<if test="shareUrl != null"> share_url = #{shareUrl},</if>
+			<if test="coverUrl != null"> cover_url = #{coverUrl},</if>
+			<if test="readCount != null"> read_count = #{readCount},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="pubStatus != null and '' != pubStatus"> pub_status = #{pubStatus},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_book
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="book">
+		select
+			*
+		from
+			t_book
+		where
+			id = #{id}
+	</select>
+	
+	<select id="listByProjId" resultType="book">
+		select
+			*
+		from
+			t_book
+		where
+			proj_id = #{projId}
+		order by
+			sort_weight asc,title asc
+	</select>
+	
+	<select id="listAuth" resultType="map">
+		select
+			b.id as book_id,
+			b.proj_id,
+			m.proj_role_id
+		from
+			t_book b
+		left join 
+			t_proj_mem m 
+		on (
+			b.proj_id = m.proj_id
+			and m.user_id = #{userId}
+		)
+		where
+			(
+				b.user_id = #{userId}
+				and b.proj_id is null
+			)
+		or 
+			m.id is not null
+	</select>
+</mapper>

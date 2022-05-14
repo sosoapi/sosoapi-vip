@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.ModuleDao">
+	<insert id="add" parameterType="module" useGeneratedKeys="true" keyProperty="id">
+		insert into t_module
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				code,
+				name,
+				description,
+				sort_weight
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{code},
+				#{name},
+				#{description},
+				#{sortWeight}
+			)	
+	</insert>
+	
+	<insert id="batchAdd" parameterType="list">
+		insert into t_module
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				code,
+				name,
+				description,
+				sort_weight
+			)
+		values
+  		<foreach collection="list" item="item" index="index" separator=",">
+  			(
+  				#{item.createDate},
+				#{item.modifyDate},
+				#{item.docId},
+				#{item.code},
+				#{item.name},
+				#{item.description},
+				#{item.sortWeight}
+			)	
+  		</foreach>
+	</insert>
+	
+	<update id="updateByDocId" parameterType="module">
+		update t_module
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="true"> description = #{description},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<delete id="deleteByDocId">
+		delete from
+			t_module
+		where
+			id = #{moduleId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="getById" resultType="module">
+		select
+			*
+		from
+			t_module
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForListByDocId">
+		from
+			t_module
+		where
+			doc_id = #{docId}
+		<if test="code != null and '' != code">
+		and
+			code like #{code}
+		</if>
+		
+		<if test="name != null and '' != name">
+		and
+			name like #{name}
+		</if>
+		
+		<if test="description != null and '' != description">
+		and
+			description like #{description}
+		</if>
+	</sql>
+	
+	<select id="listByDocId" resultType="module">
+		select
+			*
+		<include refid="sqlForListByDocId"/>
+		order by
+			sort_weight asc,create_date asc
+		<if test="pager != null">
+		limit
+			#{pager.start},#{pager.pageSize}
+		</if>
+	</select>
+	
+	<select id="countByDocId" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForListByDocId"></include>
+	</select>
+	
+	<update id="buildSortWeight">
+		update
+			t_module
+		set
+			sort_weight = sort_weight + #{step}
+		where
+			doc_id = #{docId}
+		and
+			sort_weight <![CDATA[ <= ]]> #{maxSortWeight}
+		and
+			sort_weight >= #{minSortWeight}
+	</update>
+	
+	<select id="getByDocId" resultType="module">
+		select
+			*
+		from
+			t_module
+		where
+			id = #{moduleId}
+		and
+			doc_id = #{docId}
+	</select>
+	
+	<update id="updateName">
+		update
+			t_module
+		set
+			name = #{name}
+		where
+			id = #{moduleId}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<select id="listByIdSet" resultType="module">
+		select
+			*
+		from
+			t_module
+		where
+			id in
+		<foreach collection="idSet" item="id" separator="," open="(" close=")">  
+			#{id}
+		</foreach> 
+		order by
+			sort_weight asc,name asc
+	</select>
+	
+	<select id="getMaxSortWeight" resultType="int">
+		select
+			ifnull(max(sort_weight),0)
+		from
+			t_module
+		where
+			doc_id = #{docId}
+	</select>
+	
+	<update id="updateSortWeight">
+		update
+			t_module
+		set
+			sort_weight = #{sortWeight}
+		where
+			id = #{moduleId}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<select id="listByViewId" resultType="module">
+		select 
+			m.id,
+			m.name
+		from	
+			t_doc_view_resource dvr
+		inner join
+			t_module m
+		on
+			(dvr.type = 'module' 
+				and dvr.resource_id = m.id 
+				and dvr.doc_id = m.doc_id)
+		where
+			dvr.view_id = #{viewId}
+		order by
+			m.sort_weight asc,m.create_date desc
+	</select>
+</mapper>

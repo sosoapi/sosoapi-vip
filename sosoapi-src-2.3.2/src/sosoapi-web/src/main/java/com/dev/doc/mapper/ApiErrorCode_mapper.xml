@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.ApiErrorCodeDao">
+	<insert id="add" parameterType="apiErrorCode" useGeneratedKeys="true" keyProperty="id">
+		insert into t_api_error_code
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				module_id,
+				code,
+				msg,
+				description,
+				sort_weight
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{moduleId},
+				#{code},
+				#{msg},
+				#{description},
+				#{sortWeight}
+			)	
+	</insert>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_api_error_code 
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				module_id,
+				code,
+				msg,
+				description,
+				sort_weight
+			)   
+    	values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.docId},
+				#{item.moduleId},
+				#{item.code},
+				#{item.msg},
+				#{item.description},
+				#{item.sortWeight}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<update id="updateByDocId" parameterType="apiErrorCode">
+		update t_api_error_code
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="moduleId != null and '' != moduleId"> module_id = #{moduleId},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="msg != null and '' != msg"> msg = #{msg},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<delete id="deleteByDocId" parameterType="long">
+		delete from
+			t_api_error_code
+		where
+			id = #{codeId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="getByDocId" resultType="apiErrorCode">
+		select
+			*
+		from
+			t_api_error_code
+		where
+			id = #{codeId}
+		and
+			doc_id = #{docId}
+	</select>
+	
+	<select id="listByDocId" resultType="apiErrorCode">
+		select
+			*
+		from
+			t_api_error_code
+		where
+			doc_id = #{docId}
+		<if test="moduleId != null">
+		and
+			module_id = #{moduleId}
+		</if>
+		<if test="condition != null and condition != ''">
+		and (code like #{condition} 
+				or msg like #{condition}
+				or description like #{condition})
+		</if>
+		order by
+			sort_weight asc,create_date desc
+	</select>
+	
+	<update id="buildSortWeight">
+		update
+			t_api_error_code
+		set
+			sort_weight = sort_weight + #{step}
+		where
+			doc_id = #{docId}
+		<if test="moduleId != null">
+		and
+			module_id = #{moduleId}
+		</if>
+		and
+			sort_weight <![CDATA[ <= ]]> #{maxSortWeight}
+		and
+			sort_weight >= #{minSortWeight}
+	</update>
+	
+	<select id="getMaxSortWeight" resultType="int">
+		select
+			ifnull(max(sort_weight),0)
+		from
+			t_api_error_code
+		where
+			doc_id = #{docId}
+		<if test="moduleId != null">
+		and
+			module_id = #{moduleId}
+		</if>
+	</select>
+	
+	<update id="updateSortWeight">
+		update
+			t_api_error_code
+		set
+			sort_weight = #{sortWeight}
+		where
+			id = #{codeId}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<select id="listInfoByViewId" resultType="map">
+		select 
+			aec.id,
+			aec.code,
+			aec.msg,
+			aec.description
+		from	
+			t_doc_view_resource dvr
+		inner join
+			t_api_error_code aec
+		on
+			(dvr.type = 'code' 
+				and dvr.resource_id = aec.id 
+				and dvr.doc_id = aec.doc_id)
+		where
+			dvr.view_id = #{viewId}
+		order by
+			aec.sort_weight asc,aec.create_date desc
+	</select>
+	
+	<select id="countByModule" resultType="map">
+		select
+			count(id) as total_count,
+			ifnull(module_id,-3) as module_id
+		from
+			t_api_error_code
+		where
+			doc_id = #{docId}
+		group by
+			module_id
+	</select>
+	
+	<sql id="sqlForListByModuleId">
+		from
+			t_api_error_code c
+		left join
+			t_module m
+		on
+			c.module_id = m.id
+		where
+			c.doc_id = #{docId}
+		<choose>
+			<when test="moduleId == -1"></when>
+			<when test="moduleId == -2">and 1 = 0</when>
+			<when test="moduleId == -3">
+			and
+				c.module_id is null
+			</when>
+			<when test="moduleId != null">
+			and
+				c.module_id = #{moduleId}
+			</when>
+		</choose>
+	</sql>
+	
+	<select id="listByModuleId" resultType="apiErrorCode">
+		select
+			c.*
+		<include refid="sqlForListByModuleId"></include>
+		order by
+			m.sort_weight asc,c.sort_weight asc,c.modify_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByModuleId" resultType="int">
+		select
+			count(c.id)
+		<include refid="sqlForListByModuleId"></include>
+	</select>
+</mapper>

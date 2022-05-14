@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<link href="../plugin/datetimepicker-2.5.4/jquery.datetimepicker.css" rel="stylesheet" type="text/css" />
+<script src="../plugin/datetimepicker-2.5.4/jquery.js"></script>
+<script src="../plugin/datetimepicker-2.5.4/build/jquery.datetimepicker.full.js"></script>
+<script src="../plugin/moment-2.13.0/moment.js"></script>
+<script type="text/javascript">
+	$(function(){
+		/* $.datetimepicker.setDateFormatter({
+			parseDate: function (date, format) {
+		        var d = moment(date, format);
+		        return d.isValid() ? d.toDate() : false;
+		    },
+		    
+		    formatDate: function (date, format) {
+		        return moment(date).format(format);
+		    }
+		}); */
+		
+		//全局变量设置
+		$.extend(true,$.fn.datetimepicker.defaults,{
+			timepicker:true
+		})
+		
+		$.datetimepicker.setLocale('zh');
+		$("#datetimepicker").datetimepicker({
+			/* allowTimes:[
+				'12:00', '13:00', '15:00', 
+				'17:00', '17:05', '17:20', '19:00', '20:00'
+			], */
+			
+			//无效
+			//lang:'zh',
+			//timepicker:true,
+			step:1,
+			format:'Y/m/d H:i:s',
+			todayButton:true,
+			yearStart:2015,
+			yearEnd:2050,
+			//inline:true,
+			/* mask:true, */
+			
+			//minDate:'-1970/01/02',//yesterday is minimum date(for today use 0 or -1970/01/01)
+			//maxDate:'+1970/01/02',//tomorrow is maximum date calendar
+			//minDate:'-1970/01/02',
+			//maxDate:'+1970/01/02',
+			
+			//startDate:'2016/06/22 15:00:00',
+			value:'2016/06/21 12:00:00',
+			//defaultDate:new Date(),
+			
+			onChangeDateTime:function(currentTime,$input){
+				$("#formatTime").val(currentTime.getTime());
+				//alert(moment(currentTime).format("x"));
+			}, 
+			
+			/* onSelectDate:function(currentTime,$input){
+				alert($input.val());
+			}, 
+			
+			onSelectTime:function(currentTime,$input){
+				alert($input.val());
+			}, */
+		});
+		
+		
+		$('#date_timepicker_start').datetimepicker({
+			format:'Y/m/d',
+			onShow:function( ct ){
+				this.setOptions({
+			    	maxDate:jQuery('#date_timepicker_end').val()?jQuery('#date_timepicker_end').val():false
+			   	})
+			},
+			
+			timepicker:false
+		});
+			 
+		$('#date_timepicker_end').datetimepicker({
+			format:'Y/m/d',
+			onShow:function( ct ){
+				this.setOptions({
+			    	minDate:jQuery('#date_timepicker_start').val()?jQuery('#date_timepicker_start').val():false
+			   	})
+			},
+			timepicker:false
+		});
+		
+		$("#datetimepicker").val("2016/06/23 15:00:00");
+	});
+</script>
+</head>
+<body>
+	<p>
+		Date 		<input id="datetimepicker" type="text" >
+	</p>
+
+	<p>
+		Format Date	<input id="formatTime" type="text" >
+	</p>
+	
+	<p>
+		Start 	<input id="date_timepicker_start" type="text" value="">  
+		End 	<input id="date_timepicker_end" type="text" value="">
+	</p>
+</body>
+</html>

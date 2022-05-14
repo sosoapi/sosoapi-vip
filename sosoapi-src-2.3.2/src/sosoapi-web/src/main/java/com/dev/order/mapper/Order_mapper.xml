@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.order.dao.OrderDao">
+	<insert id="add" parameterType="order" useGeneratedKeys="true" keyProperty="id">
+		insert into t_order
+			(
+				create_date,
+				modify_date,
+				order_no,
+				order_name,
+				order_desc,
+				goods_id,
+				prod_type,
+				prepay_id,
+				qr_code_url,
+				trade_no,
+				out_trade_no,
+				total_fee,
+				settlement_total_fee,
+				total_item_count,
+				expire_date,
+				device_info,
+				pay_date,
+				user_id,
+				trade_status,
+				trade_status_desc,
+				trade_ip,
+				trade_type,
+				trade_platform,
+				refund_fee,
+				refund_item_count,
+				cancel_date,
+				cancel_remark
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{orderNo},
+				#{orderName},
+				#{orderDesc},
+				#{goodsId},
+				#{prodType},
+				#{prepayId},
+				#{qrCodeUrl},
+				#{tradeNo},
+				#{outTradeNo},
+				#{totalFee},
+				#{settlementTotalFee},
+				#{totalItemCount},
+				#{expireDate},
+				#{deviceInfo},
+				#{payDate},
+				#{userId},
+				#{tradeStatus},
+				#{tradeStatusDesc},
+				#{tradeIp},
+				#{tradeType},
+				#{tradePlatform},
+				#{refundFee},
+				#{refundItemCount},
+				#{cancelDate},
+				#{cancelRemark}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="order">
+		update t_order
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="orderNo != null and '' != orderNo"> order_no = #{orderNo},</if>
+			<if test="orderName != null and '' != orderName"> order_name = #{orderName},</if>
+			<if test="orderDesc != null and '' != orderDesc"> order_desc = #{orderDesc},</if>
+			<if test="prepayId != null and '' != prepayId"> prepay_id = #{prepayId},</if>
+			<if test="qrCodeUrl != null and '' != qrCodeUrl"> qr_code_url = #{qrCodeUrl},</if>
+			<if test="tradeNo != null and '' != tradeNo"> trade_no = #{tradeNo},</if>
+			<if test="outTradeNo != null and '' != outTradeNo"> out_trade_no = #{outTradeNo},</if>
+			<if test="totalFee != null"> total_fee = #{totalFee},</if>
+			<if test="settlementTotalFee != null"> settlement_total_fee = #{settlementTotalFee},</if>
+			<if test="totalItemCount != null"> total_item_count = #{totalItemCount},</if>
+			<if test="expireDate != null and '' != expireDate"> expire_date = #{expireDate},</if>
+			<if test="deviceInfo != null and '' != deviceInfo"> device_info = #{deviceInfo},</if>
+			<if test="payDate != null and '' != payDate"> pay_date = #{payDate},</if>
+			<if test="tradeStatus != null and '' != tradeStatus"> trade_status = #{tradeStatus},</if>
+			<if test="tradeStatusDesc != null and '' != tradeStatusDesc"> trade_status_desc = #{tradeStatusDesc},</if>
+			<if test="tradeIp != null and '' != tradeIp"> trade_ip = #{tradeIp},</if>
+			<if test="tradeType != null and '' != tradeType"> trade_type = #{tradeType},</if>
+			<if test="tradePlatform != null and '' != tradePlatform"> trade_platform = #{tradePlatform},</if>
+			<if test="refundFee != null"> refund_fee = #{refundFee},</if>
+			<if test="refundItemCount != null"> refund_item_count = #{refundItemCount},</if>
+			<if test="cancelDate != null and '' != cancelDate"> cancel_date = #{cancelDate},</if>
+			<if test="cancelRemark != null and '' != cancelRemark"> cancel_remark = #{cancelRemark},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_order
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="order">
+		select
+			*
+		from
+			t_order
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByTradeNo" resultType="order">
+		select
+			*
+		from
+			t_order
+		where
+			trade_no = #{tradeNo}
+	</select>
+	
+	<sql id="sqlForListAll">
+		from
+			t_order o
+		inner join
+			t_user_basic b
+		on
+			o.user_id = b.id
+		<where>
+			<if test="tradeStatus != null and '' != tradeStatus">
+			and
+				o.trade_status = #{tradeStatus}
+			</if>
+			
+			<if test="email != null and '' != email">
+			and
+				b.email like #{email}
+			</if>
+			
+			<if test="dateStart != null">
+			and
+				o.create_date >= #{dateStart}
+			</if>
+			
+			<if test="dateEnd != null">
+			and
+				o.create_date <![CDATA[ <= ]]> #{dateEnd}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listAll" resultType="map">
+		select
+			b.email as user_email,
+			o.id as order_id,
+			o.order_no,
+			o.order_desc,
+			o.trade_no,
+			o.order_name,
+			o.expire_date,
+			o.pay_date,
+			o.user_id,
+			o.total_fee,
+			o.trade_status,
+			o.create_date,
+			o.goods_id,
+			o.prod_type
+		<include refid="sqlForListAll"></include>
+		order by
+			o.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countAll" resultType="int">
+		select
+			count(b.id)
+		<include refid="sqlForListAll"></include>
+	</select>
+	
+	<sql id="sqlForListByUserId">
+		from
+			t_order
+		<where>
+			<if test="true">
+			and
+				user_id = #{userId}
+			</if>
+			<if test="prodType != null and '' != prodType">
+			and
+				prod_type = #{prodType}
+			</if>
+			
+			<if test="tradeStatus != null and '' != tradeStatus">
+			and
+				trade_status = #{tradeStatus}
+			</if>
+			
+			<if test="dateStart != null">
+			and
+				create_date >= #{dateStart}
+			</if>
+			
+			<if test="dateEnd != null">
+			and
+				create_date <![CDATA[ <= ]]> #{dateEnd}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listByUserId" resultType="order">
+		select
+			*
+		<include refid="sqlForListByUserId"></include>
+		order by
+			create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByUserId" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForListByUserId"></include>
+	</select>
+</mapper>

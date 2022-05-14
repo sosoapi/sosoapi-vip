@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.monitor.dao.AlarmReceiverDao">
+	<insert id="add" parameterType="alarmReceiver" useGeneratedKeys="true" keyProperty="id">
+		insert into t_monitor_alarm_receiver
+			(
+				create_date,
+				modify_date,
+				user_id,
+				sys_flag,
+				sys_user_id,
+				name,
+				phone,
+				email,
+				phone_valid,
+				email_valid,
+				email_alarm,
+				phone_alarm,
+				start_time,
+				end_time,
+				description,
+				status
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{sysFlag},
+				#{sysUserId},
+				#{name},
+				#{phone},
+				#{email},
+				#{phoneValid},
+				#{emailValid},
+				#{emailAlarm},
+				#{phoneAlarm},
+				#{startTime},
+				#{endTime},
+				#{description},
+				#{status}
+			)	
+	</insert>
+	
+	<sql id="sqlForListByUserId">
+		from
+			t_monitor_alarm_receiver
+		where
+			user_id = #{userId}
+		<if test="name != null and '' != name">
+		and
+			name like #{name}
+		</if>
+		<if test="phone != null and '' != phone">
+		and
+			phone like #{phone}
+		</if>
+		<if test="email != null and '' != email">
+		and
+			email like #{email}
+		</if>
+		
+		<if test="status != null">
+		and
+			status = #{status}
+		</if>
+	</sql>
+	
+	<select id="listByUserId" resultType="alarmReceiver">
+		select
+			*
+		<include refid="sqlForListByUserId"></include>
+		order by
+			modify_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByUserId" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForListByUserId"></include>
+	</select>
+	
+	<update id="updateByUserId" parameterType="alarmReceiver">
+		update t_monitor_alarm_receiver
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="phone != null and '' != phone"> phone = #{phone},</if>
+			<if test="email != null and '' != email"> email = #{email},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			user_id = #{userId}
+	</update>
+	
+	<delete id="delByUserId">
+		delete from
+			t_monitor_alarm_receiver
+		where
+			id = #{receiverId}
+		and
+			user_id = #{userId}
+	</delete>
+	
+	<select id="getByUserId" resultType="alarmReceiver">
+		select
+			*
+		from
+			t_monitor_alarm_receiver
+		where
+			id = #{receiverId}
+		and
+			user_id = #{userId}
+	</select>
+	
+	<select id="listByGroupId" resultType="alarmReceiver">
+		select
+			r.*
+		from
+			t_monitor_alarm_group_receiver gr
+		inner join
+			t_monitor_alarm_receiver r
+		on
+			gr.receiver_id = r.id
+		where
+			gr.user_id = #{userId}
+		and
+			gr.group_id = #{groupId}
+		order by
+			r.create_date asc
+	</select>
+	
+	<select id="listReceiver" resultType="map">
+		select
+			r.id,
+			r.name,
+			if(isnull(gr.receiver_id),0,1) as exist_flag
+		from
+			t_monitor_alarm_receiver r
+		left join
+			t_monitor_alarm_group_receiver gr
+		on
+			(		gr.receiver_id = r.id 
+				and
+					gr.group_id = #{groupId}
+				and
+					gr.user_id = #{userId})
+		where
+			r.user_id = #{userId}
+		and
+			r.status = 'on'
+		order by
+			r.name asc
+	</select>
+</mapper>

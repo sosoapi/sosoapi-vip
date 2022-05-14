@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+	<context-param>
+		<param-name>Log4jConfigLocation</param-name>
+		<param-value>log4j.properties</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+            classpath:app-context.xml
+        </param-value>
+	</context-param>
+	
+	<context-param>  
+        <param-name>webAppRootKey</param-name>   
+        <param-value>env.webapp.root</param-value>  
+    </context-param>  
+    
+    <listener>   
+        <listener-class>org.springframework.web.util.WebAppRootListener</listener-class>   
+    </listener>
+    
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- spring session -->
+	<!-- <filter>
+		<filter-name>springSessionRepositoryFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>springSessionRepositoryFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+	
+	<!-- shiro 安全过滤器 -->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+	<!-- 请求url日志记录过滤器 -->  
+    <filter>  
+        <filter-name>logFilter</filter-name>  
+        <filter-class>com.dev.base.filter.LogFilter</filter-class>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>logFilter</filter-name>  
+        <url-pattern>*.htm</url-pattern>  
+    </filter-mapping>
+    
+    <!-- ajax跨域过滤器 -->  
+    <filter>  
+        <filter-name>corsFilter</filter-name>  
+        <filter-class>com.dev.base.filter.CorsFilter</filter-class>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>corsFilter</filter-name>  
+        <url-pattern>/pass/mock/*</url-pattern>  
+    </filter-mapping>
+    
+    <!-- 菜单过滤器 -->  
+    <filter>  
+        <filter-name>menuFilter</filter-name>  
+        <filter-class>com.dev.base.filter.MenuFilter</filter-class>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>menuFilter</filter-name>  
+        <url-pattern>/auth/*</url-pattern>  
+    </filter-mapping>
+    <filter-mapping>  
+        <filter-name>menuFilter</filter-name>  
+        <url-pattern>/admin/*</url-pattern>  
+    </filter-mapping>
+    
+    <!-- 配置 Druid 监控信息显示页面 -->  
+	<!-- <servlet>  
+	    <servlet-name>DruidStatView</servlet-name>  
+	    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>  
+	    <init-param>  
+			允许清空统计数据  
+			<param-name>resetEnable</param-name>  
+			<param-value>true</param-value>  
+	    </init-param>  
+	    <init-param>  
+			用户名  
+			<param-name>loginUsername</param-name>  
+			<param-value>druid</param-value>  
+	    </init-param>  
+	    <init-param>  
+			密码  
+			<param-name>loginPassword</param-name>  
+			<param-value>druid</param-value>  
+	    </init-param>  
+	</servlet>  
+	<servlet-mapping>  
+	    <servlet-name>DruidStatView</servlet-name>  
+	    <url-pattern>/druid/*</url-pattern>  
+	</servlet-mapping> -->  
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!-- 设置监听器用于系统启动时的预处理 -->
+	<listener>
+		<listener-class>com.dev.base.listener.AppInitListener</listener-class>
+	</listener>
+
+	<!-- 设置监听器用于统计在线人数 -->
+	<listener>
+		<listener-class>com.dev.base.listener.SessionListener</listener-class>
+	</listener>
+	
+	<session-config>
+		<session-timeout>120</session-timeout>
+	</session-config>
+	
+	<servlet>
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring-mvc.xml</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- <welcome-file-list>
+		<welcome-file>jsp/index.jsp</welcome-file>
+	</welcome-file-list> -->
+	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/jsp/error/403.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/jsp/error/404.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>405</error-code>
+		<location>/jsp/error/405.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/jsp/error/500.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>503</error-code>
+		<location>/jsp/error/503.jsp</location>
+	</error-page>
+</web-app>

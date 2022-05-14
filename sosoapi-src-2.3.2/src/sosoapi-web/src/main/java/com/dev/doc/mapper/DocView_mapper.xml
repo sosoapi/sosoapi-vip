@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.DocViewDao">
+	<insert id="add" parameterType="docView" useGeneratedKeys="true" keyProperty="id">
+		insert into t_doc_view
+			(
+				id,
+				create_date,
+				modify_date,
+				proj_id,
+				doc_id,
+				title,
+				description,
+				version,
+				pub,
+				share,
+				share_password,
+				share_url
+			)
+		values
+			(
+				#{id},
+				#{createDate},
+				#{modifyDate},
+				#{projId},
+				#{docId},
+				#{title},
+				#{description},
+				#{version},
+				#{pub},
+				#{share},
+				#{sharePassword},
+				#{shareUrl}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="docView">
+		update t_doc_view
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="projId != null"> proj_id = #{projId},</if>
+			<if test="docId != null"> doc_id = #{docId},</if>
+			<if test="title != null and '' != title"> title = #{title},</if>
+			<if test="description != null"> description = #{description},</if>
+			<if test="version != null"> version = #{version},</if>
+			<if test="pub != null"> pub = #{pub},</if>
+			<if test="share != null"> share = #{share},</if>
+			<if test="sharePassword != null"> share_password = #{sharePassword},</if>
+			<if test="shareUrl != null and '' != shareUrl"> share_url = #{shareUrl},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_doc_view
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="docView">
+		select
+			*
+		from
+			t_doc_view
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByDocId" resultType="docView">
+		select
+			*
+		from
+			t_doc_view
+		where
+			id = #{viewId}
+		and
+			doc_id = #{docId}
+	</select>
+	
+	<update id="updateByDocId">
+		update t_doc_view
+			<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="title != null and '' != title"> title = #{title},</if>
+			<if test="description != null"> description = #{description},</if>
+			<if test="version != null"> version = #{version},</if>
+			<if test="pub != null"> pub = #{pub},</if>
+			<if test="share != null"> share = #{share},</if>
+			<if test="sharePassword != null"> share_password = #{sharePassword},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<delete id="delByDocId">
+		delete from
+			t_doc_view
+		where
+			id = #{viewId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<sql id="sqlForListByDocId">
+		from
+			t_doc_view dv
+		inner join
+			t_api_doc ad
+		on
+			dv.doc_id = ad.id
+		inner join
+			t_proj p
+		on
+			ad.proj_id = p.id
+		where
+			dv.doc_id = #{docId}
+		<if test="title != null">
+		and
+			dv.title like #{title}
+		</if>
+		
+		<if test="description != null">
+		and
+			dv.description like #{description}
+		</if>
+	</sql>
+	
+	<select id="listByDocId" resultType="map">
+		select
+			dv.id,
+			dv.title,
+			dv.create_date,
+			dv.share,
+		    p.id as proj_id,
+			p.code,
+			p.name,
+			ad.id as doc_id,
+			ad.version
+		<include refid="sqlForListByDocId"></include>
+		order by
+			dv.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByDocId" resultType="int">
+		select
+			count(dv.id)
+		<include refid="sqlForListByDocId"></include>
+	</select>
+</mapper>

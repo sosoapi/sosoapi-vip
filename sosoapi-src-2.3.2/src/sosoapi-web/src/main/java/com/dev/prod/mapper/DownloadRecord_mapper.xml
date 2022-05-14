@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.prod.dao.DownloadRecordDao">
+	<insert id="add" parameterType="downloadRecord" useGeneratedKeys="true" keyProperty="id">
+		insert into t_download_record
+			(
+				create_date,
+				modify_date,
+				user_id,
+				goods_id,
+				goods_name,
+				goods_desc,
+				goods_type,
+				download_ip,
+				file_name
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{goodsId},
+				#{goodsName},
+				#{goodsDesc},
+				#{goodsType},
+				#{downloadIp},
+				#{fileName}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="downloadRecord">
+		update t_download_record
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="userId != null"> user_id = #{userId},</if>
+			<if test="goodsId != null"> goods_id = #{goodsId},</if>
+			<if test="goodsName != null and '' != goodsName"> goods_name = #{goodsName},</if>
+			<if test="goodsDesc != null and '' != goodsDesc"> goods_desc = #{goodsDesc},</if>
+			<if test="goodsType != null and '' != goodsType"> goods_type = #{goodsType},</if>
+			<if test="downloadIp != null and '' != downloadIp"> download_ip = #{downloadIp},</if>
+			<if test="fileName != null and '' != fileName"> file_name = #{fileName},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_download_record
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="downloadRecord">
+		select
+			*
+		from
+			t_download_record
+		where
+			id = #{id}
+	</select>
+	
+	<sql id="sqlForListAll">
+		from
+			t_download_record r
+		inner join
+			t_user_basic b
+		on
+			r.user_id = b.id
+		<where>
+			<if test="fileName != null and '' != fileName">
+			and
+				r.file_name like #{fileName}
+			</if>
+			
+			<if test="email != null and '' != email">
+			and
+				b.email like #{email}
+			</if>
+			
+			<if test="dateStart != null">
+			and
+				r.create_date >= #{dateStart}
+			</if>
+			
+			<if test="dateEnd != null">
+			and
+				r.create_date <![CDATA[ <= ]]> #{dateEnd}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="listAll" resultType="map">
+		select
+			b.email as user_email,
+			r.id as record_id,
+			r.create_date,
+			r.user_id,
+			r.goods_id,
+			r.goods_name,
+			r.goods_desc,
+			r.goods_type,
+			r.download_ip,
+			r.file_name
+		<include refid="sqlForListAll"></include>
+		order by
+			r.create_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countAll" resultType="int">
+		select
+			count(b.id)
+		<include refid="sqlForListAll"></include>
+	</select>
+</mapper>

@@ -1,0 +1,251 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification",
+        "version": "1.0.0",
+        "title": "Swagger Petstore (Simple)"
+    },
+    "host": "petstore.swagger.wordnik.com",
+    "basePath": "/api",
+    "tags": [],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/pets": {
+            "get": {
+                "tags": [],
+                "description": "Returns all pets from the system that the user has access to",
+                "operationId": "findPets",
+                "schemes": [
+                    "http"
+                ],
+                "consumes": [],
+                "produces": [
+                    "application/json",
+                    "application/xml",
+                    "text/xml",
+                    "text/html"
+                ],
+                "parameters": [
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "tags to filter by",
+                        "required": false,
+                        "type": "array",
+                        "collectionFormat": "multi",
+                        "format": ""
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "maximum number of results to return",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "pet response",
+                        "schema": {
+                            "type": "array",
+                            "format": "",
+                            "required": false,
+                            "description": "pet response",
+                            "items": {
+                                "required": false,
+                                "$ref": "#/definitions/pet"
+                            }
+                        },
+                        "sortWeight": 0
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "required": false,
+                            "description": "unexpected error",
+                            "$ref": "#/definitions/errorModel"
+                        },
+                        "sortWeight": 0
+                    }
+                },
+                "sortWeight": 1,
+                "devStatus": "none",
+                "devStatusName": "不显示",
+                "showDevStatus": false,
+                "modifyDate": "2017-09-13 16:14:37"
+            },
+            "post": {
+                "tags": [],
+                "description": "Creates a new pet in the store.  Duplicates are allowed",
+                "operationId": "addPet",
+                "schemes": [
+                    "http"
+                ],
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "pet",
+                        "description": "Pet to add to the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/newPet"
+                        },
+                        "type": "ref"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "pet response",
+                        "schema": {
+                            "required": false,
+                            "description": "pet response",
+                            "$ref": "#/definitions/pet"
+                        },
+                        "sortWeight": 0
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "required": false,
+                            "description": "unexpected error",
+                            "$ref": "#/definitions/errorModel"
+                        },
+                        "sortWeight": 0
+                    }
+                },
+                "sortWeight": 2,
+                "devStatus": "none",
+                "devStatusName": "不显示",
+                "showDevStatus": false,
+                "modifyDate": "2017-09-13 16:14:37"
+            }
+        },
+        "/pets/{id}": {
+            "get": {
+                "tags": [],
+                "description": "Returns a user based on a single ID, if the user does not have access to the pet",
+                "operationId": "findPetById",
+                "schemes": [
+                    "http"
+                ],
+                "consumes": [],
+                "produces": [
+                    "application/json",
+                    "application/xml",
+                    "text/xml",
+                    "text/html"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of pet to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "pet response",
+                        "schema": {
+                            "required": false,
+                            "description": "pet response",
+                            "$ref": "#/definitions/pet"
+                        },
+                        "sortWeight": 0
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "required": false,
+                            "description": "unexpected error",
+                            "$ref": "#/definitions/errorModel"
+                        },
+                        "sortWeight": 0
+                    }
+                },
+                "sortWeight": 3,
+                "devStatus": "none",
+                "devStatusName": "不显示",
+                "showDevStatus": false,
+                "modifyDate": "2017-09-13 16:14:38"
+            },
+            "delete": {
+                "tags": [],
+                "description": "deletes a single pet based on the ID supplied",
+                "operationId": "deletePet",
+                "schemes": [
+                    "http"
+                ],
+                "consumes": [],
+                "produces": [],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of pet to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "pet deleted",
+                        "sortWeight": 0
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "required": false,
+                            "description": "unexpected error",
+                            "$ref": "#/definitions/errorModel"
+                        },
+                        "sortWeight": 0
+                    }
+                },
+                "sortWeight": 4,
+                "devStatus": "none",
+                "devStatusName": "不显示",
+                "showDevStatus": false,
+                "modifyDate": "2017-09-13 16:14:38"
+            }
+        }
+    },
+    "definitions": {
+        "pet": {
+            "type": "string"
+        },
+        "newPet": {
+            "type": "string"
+        },
+        "errorModel": {
+            "type": "string"
+        }
+    },
+    "errorCodes": [],
+    "apiEnvs": [
+        {
+            "name": "mock环境",
+            "baseUrl": "http://localhost:9020/sosoapi-web/pass/mock/5085/",
+            "sortWeight": 2147483647,
+            "mock": true,
+            "status": "on"
+        }
+    ],
+    "commonParams": []
+}

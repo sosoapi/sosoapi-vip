@@ -1,0 +1,106 @@
+{
+    "swagger": "2.0",
+    "info": {
+	    "description": "导入说明",
+	    "version": "1.0.0",
+	    "title": "import_demo"
+	},
+    "tags": [],
+    "schemes": [],
+    "consumes": [],
+    "produces": [],
+    "paths": {},
+    "definitions": {
+        "schema-ref": {
+            "$ref": "#/definitions/schema-obj"
+        },
+        "schema-simple": {
+            "type": "string",
+            "description": "字符串"
+        },
+        "schema-array-obj": {
+            "type": "array",
+            "description": "",
+            "items": {
+                "title": "schema-array-obj",
+                "properties": {
+                    "stree": {
+                        "type": "string",
+                        "description": "街道"
+                    },
+                    "country": {
+                        "type": "string",
+                        "description": "国家"
+                    }
+                }
+            }
+        },
+        "schema-array-ref": {
+            "type": "array",
+            "description": "",
+            "items": {
+                "description": "",
+                "$ref": "#/definitions/schema-obj"
+            }
+        },
+        "schema-complex": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "format": "",
+                    "description": "复合数据",
+                    "title": "data",
+                    "properties": {
+                        "addr": {
+                            "type": "array",
+                            "format": "",
+                            "description": "地址信息",
+                            "items": {
+                                "title": "addr",
+                                "properties": {
+                                    "street": {
+                                        "type": "string",
+                                        "description": "街道"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "description": "国家"
+                                    }
+                                }
+                            }
+                        },
+                        "obj": {
+                            "description": "用户信息",
+                            "$ref": "#/definitions/schema-obj"
+                        }
+                    }
+                },
+                "errorCode": {
+                    "type": "string",
+                    "description": "返回码"
+                }
+            },
+            "description": "复合"
+        },
+        "schema-obj": {
+            "type": "object",
+            "properties": {
+                "student": {
+                    "type": "boolean",
+                    "description": "是否学生"
+                },
+                "age": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "年龄"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "姓名"
+                }
+            },
+            "description": ""
+        }
+    }
+}

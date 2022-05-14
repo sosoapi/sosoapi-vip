@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.ApiEnvDao">
+	<insert id="add" parameterType="apiEnv" useGeneratedKeys="true" keyProperty="id">
+		insert into t_api_env
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				name,
+				base_url,
+				status,
+				def,
+				description,
+				variable,
+				sort_weight
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{name},
+				#{baseUrl},
+				#{status},
+				#{def},
+				#{description},
+				#{variable},
+				#{sortWeight}
+			)	
+	</insert>
+	
+	<insert id="batchAdd" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into t_api_env
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				name,
+				base_url,
+				status,
+				def,
+				description,
+				variable,
+				sort_weight
+			)
+    	values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (	
+	        	#{item.createDate},
+				#{item.modifyDate},
+				#{item.docId},
+				#{item.name},
+				#{item.baseUrl},
+				#{item.status},
+				#{item.def},
+				#{item.description},
+				#{item.variable},
+				#{item.sortWeight}
+			)  
+	    </foreach>  
+	</insert>
+	
+	<update id="update" parameterType="apiEnv">
+		update t_api_env
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="docId != null"> doc_id = #{docId},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="baseUrl != null and '' != baseUrl"> base_url = #{baseUrl},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="def != null"> def = #{def},</if>
+			<if test="description != null and '' != description"> description = #{description},</if>
+			<if test="variable != null and '' != variable"> variable = #{variable},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_api_env
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="apiEnv">
+		select
+			*
+		from
+			t_api_env
+		where
+			id = #{id}
+	</select>
+	
+	<select id="listByDocId" resultType="apiEnv">
+		select
+			*
+		from
+			t_api_env
+		where
+			doc_id = #{docId}
+		<if test="status != null and '' != status">
+		and
+			status = #{status}
+		</if>
+		order by
+			sort_weight asc
+	</select>
+	
+	<delete id="batchDelByDocId">
+		delete from
+			t_api_env
+		where
+			doc_id = #{docId}
+	</delete>
+	
+	<insert id="cloneByDocId">
+		insert into t_api_env
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				name,
+				base_url,
+				status,
+				def,
+				description,
+				variable,
+				sort_weight
+			)
+    	select
+    		now(),
+    		now(),
+    		#{cloneDocId},
+    		name,
+			base_url,
+			status,
+			def,
+			description,
+			variable,
+			sort_weight
+		from
+			t_api_env
+		where
+			doc_id = #{srcDocId}
+	</insert>
+</mapper>

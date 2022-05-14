@@ -1,0 +1,14 @@
+{
+  "nickName": "name1",
+  "age": 1,
+  "userId": 1,
+  "addressList": [
+    {
+      "street": "street1",
+      "city": "city1",
+      "country":{
+      	"name":"PRC"
+      }
+    }
+  ]
+}

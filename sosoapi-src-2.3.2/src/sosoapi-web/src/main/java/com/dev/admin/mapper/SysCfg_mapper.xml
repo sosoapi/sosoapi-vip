@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.admin.dao.SysCfgDao">
+	<insert id="add" parameterType="sysCfg" useGeneratedKeys="true" keyProperty="id">
+		insert into t_sys_cfg
+			(
+				id,
+				create_date,
+				modify_date,
+				name,
+				code,
+				value,
+				def_val,
+				status,
+				parent_id,
+				sort_weight,
+				type,
+				description
+			)
+		values
+			(
+				#{id},
+				#{createDate},
+				#{modifyDate},
+				#{name},
+				#{code},
+				#{value},
+				#{defVal},
+				#{status},
+				#{parentId},
+				#{sortWeight},
+				#{type},
+				#{description}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="sysCfg">
+		update t_sys_cfg
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="code != null and '' != code"> code = #{code},</if>
+			<if test="value != null"> value = #{value},</if>
+			<if test="defVal != null"> def_val = #{defVal},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+			<if test="true"> parent_id = #{parentId},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="description != null"> description = #{description},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_sys_cfg
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="sysCfg">
+		select
+			*
+		from
+			t_sys_cfg
+		where
+			id = #{id}
+	</select>
+	
+	<select id="countByCode" resultType="int">
+		select
+			count(id)
+		from
+			t_sys_cfg
+		where
+			code = #{code}
+		and
+			type = 'item'
+		<if test="exceptId != null">
+		<![CDATA[ 
+		and
+			id <> #{exceptId}
+		]]>
+		</if>
+	</select>
+	
+	<select id="listAll" resultType="sysCfg">
+		select
+			id,
+			name,
+			code,
+			value,
+			def_val,
+			parent_id,
+			type
+		from
+			t_sys_cfg
+		<where>
+			<if test="type != null">
+			and
+				type = #{type}
+			</if>
+			
+			<if test="parentId != null">
+			and
+				parent_id = #{parentId}
+			</if>
+			
+			<if test="condition != null and '' != condition">
+			and
+				(name like #{condition} or code like #{condition})
+			</if>
+			
+			<if test="true">
+			and
+				status = 'on'
+			</if>
+		</where>
+		order by
+			sort_weight asc,create_date asc
+	</select>
+	
+	<update id="updateParentId">
+		update
+			t_sys_cfg
+		set
+			parent_id = #{newId}
+		where
+			parent_id = #{oldId}
+	</update>
+</mapper>

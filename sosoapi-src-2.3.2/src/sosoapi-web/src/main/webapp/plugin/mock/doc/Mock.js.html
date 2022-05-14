@@ -1,0 +1,3033 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://mockjs.com/examples.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Mock.js</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="http://mockjs.com/assets/img/logo-2.svg">
+    <script src="./Mock.js_files/require-config-css-animation.js.下载"></script>
+    <script>
+        require.config({
+            paths: {
+                mock: 'dist/mock'
+            }
+        })
+        require(['mock'], function(Mock) {
+            window.Mock = Mock
+            window.Random = Mock.Random
+        })
+    </script>
+    <link href="./Mock.js_files/index.css" rel="stylesheet">
+    <!-- https://www.uservoice.com/ -->
+<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="http://g.tbcdn.cn/thx/brix-release/0.1.0/require-css/css.js" src="./Mock.js_files/css.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="mock" src="./Mock.js_files/mock.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="assets/js/examples" src="./Mock.js_files/examples.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="./Mock.js_files/jquery.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="underscore" src="./Mock.js_files/underscore.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="vue" src="./Mock.js_files/vue.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="smooth-scroll" src="./Mock.js_files/smooth-scroll.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="assets/js/test.template" src="./Mock.js_files/test.template.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="assets/js/test.dtd.data" src="./Mock.js_files/test.dtd.data.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="assets/js/test.dpd.data" src="./Mock.js_files/test.dpd.data.js.下载"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="highlightjs" src="./Mock.js_files/highlight.pack.js.下载"></script><link type="text/css" rel="stylesheet" href="./Mock.js_files/bootstrap.min.css"><link type="text/css" rel="stylesheet" href="./Mock.js_files/components.css"><link type="text/css" rel="stylesheet" href="./Mock.js_files/parsley.css"><link type="text/css" rel="stylesheet" href="./Mock.js_files/minecraft.css"><link type="text/css" rel="stylesheet" href="./Mock.js_files/animate-min.css"></head>
+<body>
+    <div class="examples-nav">
+        <div class="container">
+            <a href="http://mockjs.com/">首页 <!-- Home --></a>
+            <a href="https://github.com/nuysoft/Mock/wiki" target="_blank">文档 <!-- Docs --></a>
+            <a href="http://mockjs.com/examples.html">示例 <!-- Examples --></a>
+            <a href="https://github.com/nuysoft/Mock/tree/refactoring" target="_blank">代码 <!-- Code --></a>
+        </div>
+    </div>
+    <div class="container" style="padding: 20px; margin-bottom: 20px;">
+        <span class="fontsize-20">示例</span>
+        <!-- <h1>Examples: Syntax Specification</h1> -->
+    </div>
+    <script id="template" type="x-template">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="mb10">
+                    <a href="#DPD" class="fontsize-16" data-scroll>数据模板定义<!-- Data Template Definition, DTD --></a>
+                </div>
+                <ul class="catalog">
+                    <li v-for="(type, item) in DTD">
+                        <div><a href="#{{ type }}" data-scroll>{{ type }}</a></div>
+                    </li>
+                </ul>
+                <div class="mb10">
+                    <a href="#DPD" class="fontsize-16" data-scroll>数据占位符定义 <!-- Data Placeholder Definition, DPD --></a>
+                </div>
+                <ul class="catalog">
+                    <li v-for="(type, methods) in DPD">
+                        <div class="mb10">
+                            <a href="#{{ type }}">{{ type }}</a>
+                        </div>
+                        <div v-for="(method, demos) in methods">
+                            <a href="#{{ method }}" data-scroll> {{ method.slice(7).split('(')[0] }} </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-10">
+                <blockquote>
+                    <p>
+                        <span class="specfont" style="font-size: 20px; margin-right: 10px; color: #999;">&#xe613;</span>
+                        <span class="color-9">你可以打开控制台，随意地试验这些方法。</span>
+                    </p>
+                </blockquote>
+
+                <div id="DTD" class="fontsize-20 mb40">数据模板定义 <!-- Data Template Definition, DTD --></div>
+                <div class="definition">
+                    <div v-for="(type, signatures) in DTD" class="mb40">
+                        <div id="{{ type }}" class="fontsize-16 mb40">{{ type }}</div>
+                        <div v-for="(signature, demos) in signatures" class="mb20">
+                            <div id=""{{ signature }}"" class="fontsize-14 mb20"><code>{{ signature }}</code></div>
+                            <div v-for="(index, demo) in demos" class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript">Mock.mock({{ demo | json }})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript">{{ demo | mock | json }}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun" v-on:click="rerun($event, 'dtd', demo)"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="DPD" class="fontsize-20 mb40">数据占位符定义 <!-- Data Placeholder Definition, DPD --></div>
+                <div class="definition">
+                    <div v-for="(type, signatures) in DPD" class="mb20">
+                        <div id="{{ type }}" class="fontsize-16 mb20">{{ type }}</div>
+                        <div v-for="(signature, demos) in signatures" class="mb20">
+                            <div id="{{ signature }}" class="fontsize-14 mb20"><code>{{ signature }}</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript">{{ demos.join('\n') }}</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div v-if="signature === 'Random.dataImage( size?, text? )' || 
+                                                signature === 'Random.image( size?, background?, foreground?, format?, text? )'">
+                                            {{{ demos | examples.dpd.img }}}
+                                        </div>
+                                        <div v-else>
+                                            <pre><code class="javascript">{{ demos | examples.dpd }}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun" v-on:click="rerun($event, 'dpd', demos)"></a>
+                                        </div>
+                                        <a href="javascript:;" class="mockicon rerun" v-on:click="rerun($event, 'dpd', demos)"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <div id="examples" class="container definition"><div class="row">
+            <div class="col-sm-2">
+                <div class="mb10">
+                    <a href="http://mockjs.com/examples.html#DPD" class="fontsize-16" data-scroll="">数据模板定义<!-- Data Template Definition, DTD --></a>
+                </div>
+                <ul class="catalog">
+                    <li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#String">String</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#Number">Number</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#Boolean">Boolean</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#Object">Object</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#Array">Array</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#Function">Function</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#RegExp">RegExp</a></div>
+                    </li><li>
+                        <div><a data-scroll="" href="http://mockjs.com/examples.html#Path">Path</a></div>
+                    </li>
+                </ul>
+                <div class="mb10">
+                    <a href="http://mockjs.com/examples.html#DPD" class="fontsize-16" data-scroll="">数据占位符定义 <!-- Data Placeholder Definition, DPD --></a>
+                </div>
+                <ul class="catalog">
+                    <li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Basic">Basic</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.boolean( min?, max?, current? )"> boolean </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.natural( min?, max? )"> natural </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.integer( min?, max? )"> integer </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.float( min?, max?, dmin?, dmax? )"> float </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.character( pool? )"> character </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.string( pool?, min?, max? )"> string </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.range(start?, stop, step?)"> range </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Date">Date</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.date( format? )"> date </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.time( format? )"> time </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.datetime( format? )"> datetime </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.now( unit?, format? )"> now </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Image">Image</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.image( size?, background?, foreground?, format?, text? )"> image </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.dataImage( size?, text? )"> dataImage </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Color">Color</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.color()"> color </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.hex()"> hex </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.rgb()"> rgb </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.rgba()"> rgba </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.hsl()"> hsl </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Text">Text</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.paragraph( min?, max? )"> paragraph </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.sentence( min?, max? )"> sentence </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.word( min?, max? )"> word </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.title( min?, max? )"> title </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.cparagraph( min?, max? )"> cparagraph </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.csentence( min?, max? )"> csentence </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.cword( pool?, min?, max? )"> cword </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.ctitle( min?, max? )"> ctitle </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Name">Name</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.first()"> first </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.last()"> last </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.name( middle? )"> name </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.cfirst()"> cfirst </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.clast()"> clast </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.cname()"> cname </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Web">Web</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.url()"> url </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.domain()"> domain </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.protocol()"> protocol </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.tld()"> tld </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.email()"> email </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.ip()"> ip </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Address">Address</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.region()"> region </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.province()"> province </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.city( prefix? )"> city </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.county( prefix? )"> county </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.zip()"> zip </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Helper">Helper</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.capitalize( word )"> capitalize </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.upper( str )"> upper </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.lower( str )"> lower </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.pick( arr )"> pick </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.shuffle( arr )"> shuffle </a>
+                        </div>
+                    </li><li>
+                        <div class="mb10">
+                            <a href="http://mockjs.com/examples.html#Miscellaneous">Miscellaneous</a>
+                        </div>
+                        <div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.guid()"> guid </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.id()"> id </a>
+                        </div><div>
+                            <a data-scroll="" href="http://mockjs.com/examples.html#Random.increment( step? )"> increment </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-10">
+                <blockquote>
+                    <p>
+                        <span class="specfont" style="font-size: 20px; margin-right: 10px; color: #999;"></span>
+                        <span class="color-9">你可以打开控制台，随意地试验这些方法。</span>
+                    </p>
+                </blockquote>
+
+                <div id="DTD" class="fontsize-20 mb40">数据模板定义 <!-- Data Template Definition, DTD --></div>
+                <div class="definition">
+                    <div class="mb40">
+                        <div class="fontsize-16 mb40" id="String">String</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|min-max': string</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"string|1-10"</span>: <span class="hljs-string">"★"</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"string"</span>: <span class="hljs-string">"★★★★★★★"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|count': string</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"string|3"</span>: <span class="hljs-string">"★★★"</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"string"</span>: <span class="hljs-string">"★★★★★★★★★"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="Number">Number</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|+1': number</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"number|+1"</span>: <span class="hljs-number">202</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"number"</span>: <span class="hljs-number">201</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|min-max': number</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"number|1-100"</span>: <span class="hljs-number">100</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"number"</span>: <span class="hljs-number">97</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|min-max.dmin-dmax': number</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"number|1-100.1-10"</span>: <span class="hljs-number">1</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"number"</span>: <span class="hljs-number">22.574677</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"number|123.1-10"</span>: <span class="hljs-number">1</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"number"</span>: <span class="hljs-number">123.162294278</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"number|123.3"</span>: <span class="hljs-number">1</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"number"</span>: <span class="hljs-number">123.681</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"number|123.10"</span>: <span class="hljs-number">1.123</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"number"</span>: <span class="hljs-number">123.1232966235</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="Boolean">Boolean</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|1': boolean</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"boolean|1"</span>: <span class="hljs-literal">true</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"boolean"</span>: <span class="hljs-literal">false</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|min-max': boolean</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"boolean|1-2"</span>: <span class="hljs-literal">true</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"boolean"</span>: <span class="hljs-literal">true</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="Object">Object</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|count': object</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"object|2"</span>: {
+    <span class="hljs-string">"310000"</span>: <span class="hljs-string">"上海市"</span>,
+    <span class="hljs-string">"320000"</span>: <span class="hljs-string">"江苏省"</span>,
+    <span class="hljs-string">"330000"</span>: <span class="hljs-string">"浙江省"</span>,
+    <span class="hljs-string">"340000"</span>: <span class="hljs-string">"安徽省"</span>
+  }
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"object"</span>: {
+    <span class="hljs-string">"320000"</span>: <span class="hljs-string">"江苏省"</span>,
+    <span class="hljs-string">"330000"</span>: <span class="hljs-string">"浙江省"</span>
+  }
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|min-max': object</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"object|2-4"</span>: {
+    <span class="hljs-string">"110000"</span>: <span class="hljs-string">"北京市"</span>,
+    <span class="hljs-string">"120000"</span>: <span class="hljs-string">"天津市"</span>,
+    <span class="hljs-string">"130000"</span>: <span class="hljs-string">"河北省"</span>,
+    <span class="hljs-string">"140000"</span>: <span class="hljs-string">"山西省"</span>
+  }
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"object"</span>: {
+    <span class="hljs-string">"110000"</span>: <span class="hljs-string">"北京市"</span>,
+    <span class="hljs-string">"120000"</span>: <span class="hljs-string">"天津市"</span>,
+    <span class="hljs-string">"130000"</span>: <span class="hljs-string">"河北省"</span>
+  }
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="Array">Array</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|1': array</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|1"</span>: [
+    <span class="hljs-string">"AMD"</span>,
+    <span class="hljs-string">"CMD"</span>,
+    <span class="hljs-string">"UMD"</span>
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: <span class="hljs-string">"CMD"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|+1': array</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|+1"</span>: [
+    <span class="hljs-string">"AMD"</span>,
+    <span class="hljs-string">"CMD"</span>,
+    <span class="hljs-string">"UMD"</span>
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: <span class="hljs-string">"AMD"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|1-10"</span>: [
+    {
+      <span class="hljs-string">"name|+1"</span>: [
+        <span class="hljs-string">"Hello"</span>,
+        <span class="hljs-string">"Mock.js"</span>,
+        <span class="hljs-string">"!"</span>
+      ]
+    }
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: [
+    {
+      <span class="hljs-string">"name"</span>: <span class="hljs-string">"Hello"</span>
+    },
+    {
+      <span class="hljs-string">"name"</span>: <span class="hljs-string">"Mock.js"</span>
+    },
+    {
+      <span class="hljs-string">"name"</span>: <span class="hljs-string">"!"</span>
+    },
+    {
+      <span class="hljs-string">"name"</span>: <span class="hljs-string">"Hello"</span>
+    }
+  ]
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|min-max': array</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|1-10"</span>: [
+    <span class="hljs-string">"Mock.js"</span>
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: [
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>
+  ]
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|1-10"</span>: [
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: [
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>
+  ]
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name|count': array</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|3"</span>: [
+    <span class="hljs-string">"Mock.js"</span>
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: [
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"Mock.js"</span>
+  ]
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"array|3"</span>: [
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>
+  ]
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"array"</span>: [
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>,
+    <span class="hljs-string">"Hello"</span>,
+    <span class="hljs-string">"Mock.js"</span>,
+    <span class="hljs-string">"!"</span>
+  ]
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="Function">Function</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name': function</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">'foo'</span>: <span class="hljs-string">'Syntax Demo'</span>,
+  <span class="hljs-string">'name'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.foo
+  }
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"Syntax Demo"</span>,
+  <span class="hljs-string">"name"</span>: <span class="hljs-string">"Syntax Demo"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="RegExp">RegExp</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>'name': regexp</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">'regexp'</span>: <span class="hljs-regexp">/[a-z][A-Z][0-9]/</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"regexp"</span>: <span class="hljs-string">"cV6"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">'regexp'</span>: <span class="hljs-regexp">/\w\W\s\S\d\D/</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"regexp"</span>: <span class="hljs-string">"2*\rt7G"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">'regexp'</span>: <span class="hljs-regexp">/\d{5,10}/</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"regexp"</span>: <span class="hljs-string">"886095442"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">'regexp|3'</span>: <span class="hljs-regexp">/\d{5,10}\-/</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"regexp"</span>: <span class="hljs-string">"871967781-43293886-485706468-41766853-"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">'regexp|1-5'</span>: <span class="hljs-regexp">/\d{5,10}\-/</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"regexp"</span>: <span class="hljs-string">"86554843-789744723-31180815-"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb40">
+                        <div class="fontsize-16 mb40" id="Path">Path</div>
+                        <div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>Absolute Path</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"Hello"</span>,
+  <span class="hljs-string">"nested"</span>: {
+    <span class="hljs-string">"a"</span>: {
+      <span class="hljs-string">"b"</span>: {
+        <span class="hljs-string">"c"</span>: <span class="hljs-string">"Mock.js"</span>
+      }
+    }
+  },
+  <span class="hljs-string">"absolutePath"</span>: <span class="hljs-string">"@/foo @/nested/a/b/c"</span>
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"Hello"</span>,
+  <span class="hljs-string">"nested"</span>: {
+    <span class="hljs-string">"a"</span>: {
+      <span class="hljs-string">"b"</span>: {
+        <span class="hljs-string">"c"</span>: <span class="hljs-string">"Mock.js"</span>
+      }
+    }
+  },
+  <span class="hljs-string">"absolutePath"</span>: <span class="hljs-string">"Hello Mock.js"</span>
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div id="" {{="" signature="" }}""="" class="fontsize-14 mb20"><code>Relative Path</code></div>
+                            <div class="mb20">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="code">
+                                            <span class="badge">Data Template</span>
+                                            <pre><code class="javascript hljs">Mock.mock({
+  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"Hello"</span>,
+  <span class="hljs-string">"nested"</span>: {
+    <span class="hljs-string">"a"</span>: {
+      <span class="hljs-string">"b"</span>: {
+        <span class="hljs-string">"c"</span>: <span class="hljs-string">"Mock.js"</span>
+      }
+    }
+  },
+  <span class="hljs-string">"relativePath"</span>: {
+    <span class="hljs-string">"a"</span>: {
+      <span class="hljs-string">"b"</span>: {
+        <span class="hljs-string">"c"</span>: <span class="hljs-string">"@../../../foo @../../../nested/a/b/c"</span>
+      }
+    }
+  }
+})</code></pre>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="result">
+                                            <span class="badge">Result</span>
+                                            <pre><code class="javascript hljs">{
+  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"Hello"</span>,
+  <span class="hljs-string">"nested"</span>: {
+    <span class="hljs-string">"a"</span>: {
+      <span class="hljs-string">"b"</span>: {
+        <span class="hljs-string">"c"</span>: <span class="hljs-string">"Mock.js"</span>
+      }
+    }
+  },
+  <span class="hljs-string">"relativePath"</span>: {
+    <span class="hljs-string">"a"</span>: {
+      <span class="hljs-string">"b"</span>: {
+        <span class="hljs-string">"c"</span>: <span class="hljs-string">"Hello Mock.js"</span>
+      }
+    }
+  }
+}</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="DPD" class="fontsize-20 mb40">数据占位符定义 <!-- Data Placeholder Definition, DPD --></div>
+                <div class="definition">
+                    <div class="mb20">
+                        <div class="fontsize-16 mb20" id="Basic">Basic</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.boolean( min?, max?, current? )"><code>Random.boolean( min?, max?, current? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.boolean()</span>
+Random.boolean()
+Mock.mock(<span class="hljs-string">'@boolean'</span>)
+Mock.mock(<span class="hljs-string">'@boolean()'</span>)
+
+<span class="hljs-comment">// Random.boolean( min, max, current )</span>
+Random.boolean(<span class="hljs-number">1</span>, <span class="hljs-number">9</span>, <span class="hljs-literal">true</span>)
+Mock.mock(<span class="hljs-string">'@boolean(1, 9, true)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.boolean()</span>
+<span class="hljs-literal">false</span>
+<span class="hljs-literal">false</span>
+<span class="hljs-literal">true</span>
+
+<span class="hljs-comment">// Random.boolean( min, max, current )</span>
+<span class="hljs-literal">false</span>
+<span class="hljs-literal">false</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.natural( min?, max? )"><code>Random.natural( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.natural()</span>
+Random.natural()
+Mock.mock(<span class="hljs-string">'@natural'</span>)
+Mock.mock(<span class="hljs-string">'@natural()'</span>)
+
+<span class="hljs-comment">// Random.natural( min )</span>
+Random.natural(<span class="hljs-number">10000</span>)
+Mock.mock(<span class="hljs-string">'@natural(10000)'</span>)
+
+<span class="hljs-comment">// Random.natural( min, max )</span>
+Random.natural(<span class="hljs-number">60</span>, <span class="hljs-number">100</span>)
+Mock.mock(<span class="hljs-string">'@natural(60, 100)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.natural()</span>
+<span class="hljs-number">7345914983161006</span>
+<span class="hljs-number">265076146595224</span>
+<span class="hljs-number">2984172108694416</span>
+
+<span class="hljs-comment">// Random.natural( min )</span>
+<span class="hljs-number">1106741997081177</span>
+<span class="hljs-number">5111161663027715</span>
+
+<span class="hljs-comment">// Random.natural( min, max )</span>
+<span class="hljs-number">81</span>
+<span class="hljs-number">76</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.integer( min?, max? )"><code>Random.integer( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.integer()</span>
+Random.integer()
+Mock.mock(<span class="hljs-string">'@integer'</span>)
+Mock.mock(<span class="hljs-string">'@integer()'</span>)
+
+<span class="hljs-comment">// Random.integer( min )</span>
+Random.integer(<span class="hljs-number">10000</span>)
+Mock.mock(<span class="hljs-string">'@integer(10000)'</span>)
+
+<span class="hljs-comment">// Random.integer( min, max )</span>
+Random.integer(<span class="hljs-number">60</span>, <span class="hljs-number">100</span>)
+Mock.mock(<span class="hljs-string">'@integer(60, 100)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.integer()</span>
+<span class="hljs-number">5433253466700736</span>
+-<span class="hljs-number">2103331554101968</span>
+-<span class="hljs-number">3252618943379600</span>
+
+<span class="hljs-comment">// Random.integer( min )</span>
+<span class="hljs-number">8096343042689481</span>
+<span class="hljs-number">5969574836284936</span>
+
+<span class="hljs-comment">// Random.integer( min, max )</span>
+<span class="hljs-number">84</span>
+<span class="hljs-number">81</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.float( min?, max?, dmin?, dmax? )"><code>Random.float( min?, max?, dmin?, dmax? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.float()</span>
+Random.float()
+Mock.mock(<span class="hljs-string">'@float'</span>)
+Mock.mock(<span class="hljs-string">'@float()'</span>)
+
+<span class="hljs-comment">// Random.float( min )</span>
+Random.float(<span class="hljs-number">0</span>)
+Mock.mock(<span class="hljs-string">'@float(0)'</span>)
+
+<span class="hljs-comment">// Random.float( min, max )</span>
+Random.float(<span class="hljs-number">60</span>, <span class="hljs-number">100</span>)
+Mock.mock(<span class="hljs-string">'@float(60, 100)'</span>)
+
+<span class="hljs-comment">// Random.float( min, max, dmin )</span>
+Random.float(<span class="hljs-number">60</span>, <span class="hljs-number">100</span>, <span class="hljs-number">3</span>)
+Mock.mock(<span class="hljs-string">'@float(60, 100, 3)'</span>)
+
+<span class="hljs-comment">// Random.float( min, max, dmin, dmax )</span>
+Random.float(<span class="hljs-number">60</span>, <span class="hljs-number">100</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@float(60, 100, 3, 5)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.float()</span>
+-<span class="hljs-number">7736933368185021</span>
+<span class="hljs-number">7274276259812732</span>
+<span class="hljs-number">7233248913963661</span>
+
+<span class="hljs-comment">// Random.float( min )</span>
+<span class="hljs-number">1703910175577924</span>
+<span class="hljs-number">8539107826151385</span>
+
+<span class="hljs-comment">// Random.float( min, max )</span>
+<span class="hljs-number">61.05188354</span>
+<span class="hljs-number">73.35</span>
+
+<span class="hljs-comment">// Random.float( min, max, dmin )</span>
+<span class="hljs-number">76.270461563854</span>
+<span class="hljs-number">69.2997883673</span>
+
+<span class="hljs-comment">// Random.float( min, max, dmin, dmax )</span>
+<span class="hljs-number">90.16348</span>
+<span class="hljs-number">75.14596</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.character( pool? )"><code>Random.character( pool? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.character()</span>
+Random.character()
+Mock.mock(<span class="hljs-string">'@character'</span>)
+Mock.mock(<span class="hljs-string">'@character()'</span>)
+
+<span class="hljs-comment">// Random.character( 'lower/upper/number/symbol' )</span>
+Random.character(<span class="hljs-string">'lower'</span>)
+Random.character(<span class="hljs-string">'upper'</span>)
+Random.character(<span class="hljs-string">'number'</span>)
+Random.character(<span class="hljs-string">'symbol'</span>)
+
+Mock.mock(<span class="hljs-string">'@character("lower")'</span>)
+Mock.mock(<span class="hljs-string">'@character("upper")'</span>)
+Mock.mock(<span class="hljs-string">'@character("number")'</span>)
+Mock.mock(<span class="hljs-string">'@character("symbol")'</span>)
+
+<span class="hljs-comment">// Random.character( pool )</span>
+Random.character(<span class="hljs-string">'aeiou'</span>)
+Mock.mock(<span class="hljs-string">'@character("aeiou")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.character()</span>
+<span class="hljs-string">"^"</span>
+<span class="hljs-string">"i"</span>
+<span class="hljs-string">"G"</span>
+
+<span class="hljs-comment">// Random.character( 'lower/upper/number/symbol' )</span>
+<span class="hljs-string">"u"</span>
+<span class="hljs-string">"G"</span>
+<span class="hljs-string">"1"</span>
+<span class="hljs-string">"#"</span>
+
+<span class="hljs-string">"u"</span>
+<span class="hljs-string">"L"</span>
+<span class="hljs-string">"8"</span>
+<span class="hljs-string">"$"</span>
+
+<span class="hljs-comment">// Random.character( pool )</span>
+<span class="hljs-string">"e"</span>
+<span class="hljs-string">"i"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.string( pool?, min?, max? )"><code>Random.string( pool?, min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.string()</span>
+Random.string()
+Mock.mock(<span class="hljs-string">'@string'</span>)
+Mock.mock(<span class="hljs-string">'@string()'</span>)
+
+<span class="hljs-comment">// Random.string( length )</span>
+Random.string(<span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@string(5)'</span>)
+
+<span class="hljs-comment">// Random.string( pool, length )</span>
+Random.string(<span class="hljs-string">'lower'</span>, <span class="hljs-number">5</span>)
+Random.string(<span class="hljs-string">'upper'</span>, <span class="hljs-number">5</span>)
+Random.string(<span class="hljs-string">'number'</span>, <span class="hljs-number">5</span>)
+Random.string(<span class="hljs-string">'symbol'</span>, <span class="hljs-number">5</span>)
+Random.string(<span class="hljs-string">'aeiou'</span>, <span class="hljs-number">5</span>)
+
+Mock.mock(<span class="hljs-string">'@string("lower", 5)'</span>)
+Mock.mock(<span class="hljs-string">'@string("upper", 5)'</span>)
+Mock.mock(<span class="hljs-string">'@string("number", 5)'</span>)
+Mock.mock(<span class="hljs-string">'@string("symbol", 5)'</span>)
+Mock.mock(<span class="hljs-string">'@string("aeiou", 5)'</span>)
+
+<span class="hljs-comment">// Random.string( min, max )</span>
+Random.string(<span class="hljs-number">7</span>, <span class="hljs-number">10</span>)
+Mock.mock(<span class="hljs-string">'@string(7, 10)'</span>)
+
+<span class="hljs-comment">// Random.string( pool, min, max )</span>
+Random.string(<span class="hljs-string">'lower'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+Random.string(<span class="hljs-string">'upper'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+Random.string(<span class="hljs-string">'number'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+Random.string(<span class="hljs-string">'symbol'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+Random.string(<span class="hljs-string">'aeiou'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+
+Mock.mock(<span class="hljs-string">'@string("lower", 1, 3)'</span>)
+Mock.mock(<span class="hljs-string">'@string("upper", 1, 3)'</span>)
+Mock.mock(<span class="hljs-string">'@string("number", 1, 3)'</span>)
+Mock.mock(<span class="hljs-string">'@string("symbol", 1, 3)'</span>)
+Mock.mock(<span class="hljs-string">'@string("aeiou", 1, 3)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.string()</span>
+<span class="hljs-string">"9gZ0"</span>
+<span class="hljs-string">"R^67"</span>
+<span class="hljs-string">"[(Bv#6"</span>
+
+<span class="hljs-comment">// Random.string( length )</span>
+<span class="hljs-string">"PIE3u"</span>
+<span class="hljs-string">"fv5Ro"</span>
+
+<span class="hljs-comment">// Random.string( pool, length )</span>
+<span class="hljs-string">"nrhrh"</span>
+<span class="hljs-string">"ICBKN"</span>
+<span class="hljs-string">"92512"</span>
+<span class="hljs-string">")]*@["</span>
+<span class="hljs-string">"eaeio"</span>
+
+<span class="hljs-string">"ggbdj"</span>
+<span class="hljs-string">"QQXUE"</span>
+<span class="hljs-string">"44417"</span>
+<span class="hljs-string">"(**)&amp;"</span>
+<span class="hljs-string">"uioau"</span>
+
+<span class="hljs-comment">// Random.string( min, max )</span>
+<span class="hljs-string">"^(E6Lbe2O"</span>
+<span class="hljs-string">"SgHUjFS*"</span>
+
+<span class="hljs-comment">// Random.string( pool, min, max )</span>
+<span class="hljs-string">"me"</span>
+<span class="hljs-string">"CI"</span>
+<span class="hljs-string">"09"</span>
+<span class="hljs-string">"#($"</span>
+<span class="hljs-string">"ui"</span>
+
+<span class="hljs-string">"yq"</span>
+<span class="hljs-string">"R"</span>
+<span class="hljs-string">"27"</span>
+<span class="hljs-string">"("</span>
+<span class="hljs-string">"io"</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.range(start?, stop, step?)"><code>Random.range(start?, stop, step?)</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.range( stop )</span>
+Random.range(<span class="hljs-number">10</span>)
+Mock.mock(<span class="hljs-string">'@range(10)'</span>)
+
+<span class="hljs-comment">// Random.range( start, stop )</span>
+Random.range(<span class="hljs-number">3</span>, <span class="hljs-number">7</span>)
+Mock.mock(<span class="hljs-string">'@range(3, 7)'</span>)
+
+<span class="hljs-comment">// Random.range( start, stop, step )</span>
+Random.range(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">2</span>)
+Random.range(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">3</span>)
+
+Mock.mock(<span class="hljs-string">'@range(1, 10, 2)'</span>)
+Mock.mock(<span class="hljs-string">'@range(1, 10, 3)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.range( stop )</span>
+[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>]
+[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>]
+
+<span class="hljs-comment">// Random.range( start, stop )</span>
+[<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>]
+[<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>]
+
+<span class="hljs-comment">// Random.range( start, stop, step )</span>
+[<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">7</span>,<span class="hljs-number">9</span>]
+[<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>]
+
+[<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">7</span>,<span class="hljs-number">9</span>]
+[<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>]</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Date">Date</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.date( format? )"><code>Random.date( format? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.date()</span>
+Random.date()
+Mock.mock(<span class="hljs-string">'@date'</span>)
+Mock.mock(<span class="hljs-string">'@date()'</span>)
+
+<span class="hljs-comment">// Random.date( format )</span>
+Random.date(<span class="hljs-string">'yyyy-MM-dd'</span>)
+Random.date(<span class="hljs-string">'yy-MM-dd'</span>)
+Random.date(<span class="hljs-string">'y-MM-dd'</span>)
+Random.date(<span class="hljs-string">'y-M-d'</span>)
+
+Mock.mock(<span class="hljs-string">'@date("yyyy-MM-dd")'</span>)
+Mock.mock(<span class="hljs-string">'@date("yy-MM-dd")'</span>)
+Mock.mock(<span class="hljs-string">'@date("y-MM-dd")'</span>)
+Mock.mock(<span class="hljs-string">'@date("y-M-d")'</span>)
+
+Mock.mock(<span class="hljs-string">'@date("yyyy yy y MM M dd d")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.date()</span>
+<span class="hljs-string">"1988-11-16"</span>
+<span class="hljs-string">"1992-03-15"</span>
+<span class="hljs-string">"1993-01-12"</span>
+
+<span class="hljs-comment">// Random.date( format )</span>
+<span class="hljs-string">"1971-05-15"</span>
+<span class="hljs-string">"85-04-03"</span>
+<span class="hljs-string">"76-11-05"</span>
+<span class="hljs-string">"08-11-30"</span>
+
+<span class="hljs-string">"1983-04-08"</span>
+<span class="hljs-string">"02-10-31"</span>
+<span class="hljs-string">"15-03-12"</span>
+<span class="hljs-string">"12-9-2"</span>
+
+<span class="hljs-string">"2017 17 17 01 1 05 5"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.time( format? )"><code>Random.time( format? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.time()</span>
+Random.time()
+Mock.mock(<span class="hljs-string">'@time'</span>)
+Mock.mock(<span class="hljs-string">'@time()'</span>)
+
+<span class="hljs-comment">// Random.time( format )</span>
+Random.time(<span class="hljs-string">'A HH:mm:ss'</span>)
+Random.time(<span class="hljs-string">'a HH:mm:ss'</span>)
+Random.time(<span class="hljs-string">'HH:mm:ss'</span>)
+Random.time(<span class="hljs-string">'H:m:s'</span>)
+
+Mock.mock(<span class="hljs-string">'@time("A HH:mm:ss")'</span>)
+Mock.mock(<span class="hljs-string">'@time("a HH:mm:ss")'</span>)
+Mock.mock(<span class="hljs-string">'@time("HH:mm:ss")'</span>)
+Mock.mock(<span class="hljs-string">'@time("H:m:s")'</span>)
+
+Mock.mock(<span class="hljs-string">'@datetime("HH H hh h mm m ss s SS S A a T")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.time()</span>
+<span class="hljs-string">"06:05:55"</span>
+<span class="hljs-string">"14:05:52"</span>
+<span class="hljs-string">"16:19:37"</span>
+
+<span class="hljs-comment">// Random.time( format )</span>
+<span class="hljs-string">"AM 07:23:46"</span>
+<span class="hljs-string">"am 09:53:57"</span>
+<span class="hljs-string">"23:20:55"</span>
+<span class="hljs-string">"21:52:34"</span>
+
+<span class="hljs-string">"AM 11:27:53"</span>
+<span class="hljs-string">"am 03:49:27"</span>
+<span class="hljs-string">"04:42:59"</span>
+<span class="hljs-string">"16:59:0"</span>
+
+<span class="hljs-string">"04 4 04 4 13 13 15 15 268 268 AM am 1118002395268"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.datetime( format? )"><code>Random.datetime( format? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.datetime()</span>
+Random.datetime()
+Mock.mock(<span class="hljs-string">'@datetime'</span>)
+Mock.mock(<span class="hljs-string">'@datetime()'</span>)
+
+<span class="hljs-comment">// Random.datetime( format )</span>
+Random.datetime(<span class="hljs-string">'yyyy-MM-dd A HH:mm:ss'</span>)
+Random.datetime(<span class="hljs-string">'yy-MM-dd a HH:mm:ss'</span>)
+Random.datetime(<span class="hljs-string">'y-MM-dd HH:mm:ss'</span>)
+Random.datetime(<span class="hljs-string">'y-M-d H:m:s'</span>)
+
+Mock.mock(<span class="hljs-string">'@datetime("yyyy-MM-dd A HH:mm:ss")'</span>)
+Mock.mock(<span class="hljs-string">'@datetime("yy-MM-dd a HH:mm:ss")'</span>)
+Mock.mock(<span class="hljs-string">'@datetime("y-MM-dd HH:mm:ss")'</span>)
+Mock.mock(<span class="hljs-string">'@datetime("y-M-d H:m:s")'</span>)
+
+Mock.mock(<span class="hljs-string">'@datetime("yyyy yy y MM M dd d HH H hh h mm m ss s SS S A a T")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.datetime()</span>
+<span class="hljs-string">"1971-05-29 05:15:50"</span>
+<span class="hljs-string">"1981-06-14 12:17:08"</span>
+<span class="hljs-string">"1995-03-16 10:41:58"</span>
+
+<span class="hljs-comment">// Random.datetime( format )</span>
+<span class="hljs-string">"2014-08-25 AM 10:21:13"</span>
+<span class="hljs-string">"76-09-14 am 02:56:04"</span>
+<span class="hljs-string">"78-01-16 16:42:08"</span>
+<span class="hljs-string">"01-12-21 3:38:52"</span>
+
+<span class="hljs-string">"1991-06-27 PM 14:05:34"</span>
+<span class="hljs-string">"89-08-29 pm 21:34:24"</span>
+<span class="hljs-string">"16-05-02 21:10:34"</span>
+<span class="hljs-string">"02-10-5 12:15:35"</span>
+
+<span class="hljs-string">"1975 75 75 09 9 16 16 04 4 04 4 44 44 37 37 424 424 AM am 180045877424"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.now( unit?, format? )"><code>Random.now( unit?, format? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Ranndom.now()</span>
+Random.now()
+Mock.mock(<span class="hljs-string">'@now'</span>)
+Mock.mock(<span class="hljs-string">'@now()'</span>)
+
+<span class="hljs-comment">// Ranndom.now( unit )</span>
+Random.now(<span class="hljs-string">'year'</span>)
+Random.now(<span class="hljs-string">'month'</span>)
+Random.now(<span class="hljs-string">'week'</span>)
+Random.now(<span class="hljs-string">'day'</span>)
+Random.now(<span class="hljs-string">'hour'</span>)
+Random.now(<span class="hljs-string">'minute'</span>)
+Random.now(<span class="hljs-string">'second'</span>)
+
+<span class="hljs-comment">// Ranndom.now( format )</span>
+Random.now(<span class="hljs-string">'yyyy-MM-dd HH:mm:ss SS'</span>)
+
+<span class="hljs-comment">// Ranndom.now( unit, format )</span>
+Random.now(<span class="hljs-string">'day'</span>, <span class="hljs-string">'yyyy-MM-dd HH:mm:ss SS'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Ranndom.now()</span>
+<span class="hljs-string">"2017-02-21 17:44:45"</span>
+<span class="hljs-string">"2017-02-21 17:44:45"</span>
+<span class="hljs-string">"2017-02-21 17:44:45"</span>
+
+<span class="hljs-comment">// Ranndom.now( unit )</span>
+<span class="hljs-string">"2017-01-01 00:00:00"</span>
+<span class="hljs-string">"2017-02-01 00:00:00"</span>
+<span class="hljs-string">"2017-02-19 00:00:00"</span>
+<span class="hljs-string">"2017-02-21 00:00:00"</span>
+<span class="hljs-string">"2017-02-21 17:00:00"</span>
+<span class="hljs-string">"2017-02-21 17:44:00"</span>
+<span class="hljs-string">"2017-02-21 17:44:45"</span>
+
+<span class="hljs-comment">// Ranndom.now( format )</span>
+<span class="hljs-string">"2017-02-21 17:44:45 649"</span>
+
+<span class="hljs-comment">// Ranndom.now( unit, format )</span>
+<span class="hljs-string">"2017-02-21 00:00:00 000"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Image">Image</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.image( size?, background?, foreground?, format?, text? )"><code>Random.image( size?, background?, foreground?, format?, text? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.image()</span>
+Random.image()
+<span class="hljs-comment">// Random.image( size )</span>
+Random.image(<span class="hljs-string">'200x100'</span>)
+<span class="hljs-comment">// Random.image( size, background )</span>
+Random.image(<span class="hljs-string">'200x100'</span>, <span class="hljs-string">'#FF6600'</span>)
+<span class="hljs-comment">// Random.image( size, background, text )</span>
+Random.image(<span class="hljs-string">'200x100'</span>, <span class="hljs-string">'#4A7BF7'</span>, <span class="hljs-string">'Hello'</span>)
+<span class="hljs-comment">// Random.image( size, background, foreground, text )</span>
+Random.image(<span class="hljs-string">'200x100'</span>, <span class="hljs-string">'#50B347'</span>, <span class="hljs-string">'#FFF'</span>, <span class="hljs-string">'Mock.js'</span>)
+<span class="hljs-comment">// Random.image( size, background, foreground, format, text )</span>
+Random.image(<span class="hljs-string">'200x100'</span>, <span class="hljs-string">'#894FC4'</span>, <span class="hljs-string">'#FFF'</span>, <span class="hljs-string">'png'</span>, <span class="hljs-string">'!'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>                                            <img class="mb10 mr10" src="./Mock.js_files/180x150"><img class="mb10 mr10" src="./Mock.js_files/200x100"><img class="mb10 mr10" src="./Mock.js_files/FF6600"><img class="mb10 mr10" src="./Mock.js_files/4A7BF7&amp;text=Hello"><img class="mb10 mr10" src="./Mock.js_files/FFF&amp;text=Mock.js.下载"><img class="mb10 mr10" src="./Mock.js_files/FFF.png&amp;text=!">                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.dataImage( size?, text? )"><code>Random.dataImage( size?, text? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.dataImage()</span>
+Random.dataImage()
+
+<span class="hljs-comment">// Random.dataImage( size )</span>
+Random.dataImage(<span class="hljs-string">'200x100'</span>)
+
+<span class="hljs-comment">// Random.dataImage( size, text )</span>
+Random.dataImage(<span class="hljs-string">'200x100'</span>, <span class="hljs-string">'Hello Mock.js!'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>                                            <img class="mb10 mr10" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVAAAAEYCAYAAAAK467YAAAKXElEQVR4Xu3asYocBRzH8TkTiY0WVlppKSjYWlr7CEKewMonsLWzyhMEfAHBxlbQVrDQRhQRAxbCWeihIWEWJoyTmz32O2yKzCdNIMdvc/fZP192N7n45Kvh0eAXAQIECJwscCGgJ5sZECBA4CAgoA6BAAECUUBAI5wZAQIEBNQNECBAIAoIaIQzI0CAgIC6AQIECEQBAY1wZgQIEBBQN0CAAIEoIKARzowAAQIC6gYIECAQBQQ0wpkRIEBAQN0AAQIEooCARjgzAgQICKgbIECAQBQQ0AhnRoAAAQF1AwQIEIgCAhrhzAgQICCgboAAAQJRQEAjnBkBAgQE1A0QIEAgCghohDMjQICAgLoBAgQIRAEBjXBmBAgQEFA3QIAAgSggoBHOjAABAgLqBggQIBAFBDTCmREgQEBA3QABAgSigIBGODMCBAgIqBsgQIBAFBDQCGdGgAABAXUDBAgQiAICGuHMCBAgIKBugAABAlFAQCOcGQECBATUDRAgQCAKCGiEMyNAgICAugECBAhEAQGNcGYECBAQUDdAgACBKCCgEc6MAAECAuoGCBAgEAUENMKZESBAQEDdAAECBKKAgEY4MwIECAioGyBAgEAUENAIZ0aAAAEBdQMECBCIAgIa4cwIECAgoG6AAAECUUBAI5wZAQIEBNQNECBAIAoIaIQzI0CAgIC6AQIECEQBAY1wZgQIEBBQN0CAAIEoIKARzowAAQIC6gYIECAQBQQ0wpkRIEBAQN0AAQIEooCARjgzAgQICKgbIECAQBQQ0AhnRoAAAQF1AwQIEIgCAhrhzAgQICCgboAAAQJRQEAjnBkBAgQE1A0QIEAgCghohDMjQICAgLoBAgQIRAEBjXBmBAgQEFA3QIAAgSggoBHOjAABAgLqBggQIBAFBDTCmREgQEBA3QABAgSigIBGODMCBAgIqBsgQIBAFBDQCGdGgAABAXUDBAgQiAICGuHMCBAgIKBugAABAlFAQCOcGQECBATUDRAgQCAKCGiEMyNAgICAugECBAhEAQGNcGYECBAQUDdAgACBKCCgEc6MAAECAuoGCBAgEAUENMKZESBAQEDdAAECBKKAgEY4MwIECAioGyBAgEAUENAIZ0aAAAEBdQMECBCIAgIa4cwIECAgoG6AAAECUUBAI5wZAQIEBNQNECBAIAoIaIQzI0CAgIC6AQIECEQBAY1wZgQIEBBQN0CAAIEoIKARzowAAQIC6gYIECAQBQQ0wpkRIEBAQN0AAQIEooCARjgzAgQICKgbIECAQBQQ0AhnRoAAAQF1AwQIEIgCAhrhzAgQICCgboAAAQJRQEAjnBkBAgQE1A0QIEAgCghohDMjQICAgLoBAgQIRAEBjXBmBAgQEFA3QIAAgSggoBHOjAABAgLqBggQIBAFBDTCmREgQEBA3QABAgSigIBGODMCBAgIqBsgQIBAFBDQCGdGgAABAXUDBAgQiAICGuHMCBAgIKBugAABAlFAQCOcGQECBATUDRAgQCAKCGiEMyNAgICAugECBAhEAQGNcGYECBAQUDewSeDd1+8OH7x1b7hz6+XD41w9/Gv48oePhu9+vz+c8rXl9tg3tfa442b+vRz7fubf5yYA410LCOiun/5tP/wUsvFRxmhOARt///7B58M7r314+LNTvjbFd+07W/s7b128eJg8fPTvUwFffj/f/vLZ8N4bHz/53sbY+0WgCAhoUbM5CJSATqH78++fhnvfvH2yZAnoTXG9Kdonf5MGuxEQ0N081ef7QedvqZdvjZdfm16ZXv13Ody5/cr/3vpPXxs/Dri8+u2pr18XunlQ5696568yl6+G5x8vTK+QvQo93308z48soM/zs/uMf7blq8N5lKavTa8Gb7/w0pPPS69763/5z6/D1z9/evhMcy1ya69Gp89jx90YdAF9xoewo79OQHf0ZJ/7Rz0loGufVc4/Lx1DuPaPPcc+Plj+I5a38Od+5vf7+AK63+d+80++5TPQLQG9LtTH/kxANz/VHmBFQECdRhY4R0DXPsdcvqqc3tZPb/9viuRNj5sRDHctIKC7fvq3//Cn/F/P6e34FL21zyqnP//xjy+GN199//APTce2y886l4973f9L9f9Atz/3HmEYBNQVECBAIAoIaIQzI0CAgIC6AQIECEQBAY1wZgQIEBBQN0CAAIEoIKARzowAAQIC6gYIECAQBQQ0wpkRIEBAQN0AAQIEooCARjgzAgQICKgbIECAQBQQ0AhnRoAAAQF1AwQIEIgCAhrhzAgQICCgboAAAQJRQEAjnBkBAgQE1A0QIEAgCghohDMjQICAgLoBAgQIRAEBjXBmBAgQEFA3QIAAgSggoBHOjAABAgLqBggQIBAFBDTCmREgQEBA3QABAgSigIBGODMCBAgIqBsgQIBAFBDQCGdGgAABAXUDBAgQiAICGuHMCBAgIKBugAABAlFAQCOcGQECBATUDRAgQCAKCGiEMyNAgICAugECBAhEAQGNcGYECBAQUDdAgACBKCCgEc6MAAECAuoGCBAgEAUENMKZESBAQEDdAAECBKKAgEY4MwIECAioGyBAgEAUENAIZ0aAAAEBdQMECBCIAgIa4cwIECAgoG6AAAECUUBAI5wZAQIEBNQNECBAIAoIaIQzI0CAgIC6AQIECEQBAY1wZgQIEBBQN0CAAIEoIKARzowAAQIC6gYIECAQBQQ0wpkRIEBAQN0AAQIEooCARjgzAgQICKgbIECAQBQQ0AhnRoAAAQF1AwQIEIgCAhrhzAgQICCgboAAAQJRQEAjnBkBAgQE1A0QIEAgCghohDMjQICAgLoBAgQIRAEBjXBmBAgQEFA3QIAAgSggoBHOjAABAgLqBggQIBAFBDTCmREgQEBA3QABAgSigIBGODMCBAgIqBsgQIBAFBDQCGdGgAABAXUDBAgQiAICGuHMCBAgIKBugAABAlFAQCOcGQECBATUDRAgQCAKCGiEMyNAgICAugECBAhEAQGNcGYECBAQUDdAgACBKCCgEc6MAAECAuoGCBAgEAUENMKZESBAQEDdAAECBKKAgEY4MwIECAioGyBAgEAUENAIZ0aAAAEBdQMECBCIAgIa4cwIECAgoG6AAAECUUBAI5wZAQIEBNQNECBAIAoIaIQzI0CAgIC6AQIECEQBAY1wZgQIEBBQN0CAAIEoIKARzowAAQIC6gYIECAQBQQ0wpkRIEBAQN0AAQIEooCARjgzAgQICKgbIECAQBQQ0AhnRoAAAQF1AwQIEIgCAhrhzAgQICCgboAAAQJRQEAjnBkBAgQE1A0QIEAgCghohDMjQICAgLoBAgQIRAEBjXBmBAgQEFA3QIAAgSggoBHOjAABAgLqBggQIBAFBDTCmREgQEBA3QABAgSigIBGODMCBAgIqBsgQIBAFBDQCGdGgAABAXUDBAgQiAICGuHMCBAgIKBugAABAlFAQCOcGQECBATUDRAgQCAKCGiEMyNAgICAugECBAhEAQGNcGYECBAQUDdAgACBKCCgEc6MAAECAuoGCBAgEAUeAzxjOq2+ZvsUAAAAAElFTkSuQmCC"><img class="mb10 mr10" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABkCAYAAADDhn8LAAAD7klEQVR4Xu3ZQYoTYRRF4T+K4KQd6MChW3Edgitw5C6cOXIFghtwG25CRMSBQuPMBluKUFjEdHXeS3SQ+2UUOu915Z5bpyuV3lx/GNfDAwEE9hLYEMSZgcDNBAji7EBghQBBnB4IEMQ5gECPgCtIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIECSlazB4BgvS42QohQJCQosXsESBIj5utEAIEqRb98PkYT96Mcediu/nrxxgfX4zx/e0Yy9eWP5/m1l475D3M+9PsfLzbfu+xxzzkfZ35DEEqBe+epNPuJMv0+PZujEfPts+/vh7j8cvt8+lkXs7tvjaJtfY4RMhTH7PC5MxnCVIp+CZBNve2v+X66u+rydpru1eDQ0TZJ93uFexUx6ywOdNZghxT7CxMV5B5b3N/jKvPY9x9sP+j2/Qe165eBDmmxdVdgnTRLk/Y5cer6sk67/78NMaXV38+si3vMwjSbenoPYJ0EJ76r/l8jzLd+O/e3M/v79THvO3ep8PlDHcIUi1137dJaz875H6AINUW/ts8QSqo/8W3WLMc+76JWv6Vv03MU35zVmFy5rMEqRS8+5XrvDt/LFq7Euz7n8Ryfnp++X6Mi6fbG/V9v3P5XrvH9NGq0vggSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCBElrXN4SAYKUcBlOI0CQtMblLREgSAmX4TQCvwEck1Fryd2b9AAAAABJRU5ErkJggg=="><img class="mb10 mr10" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABkCAYAAADDhn8LAAAEfUlEQVR4Xu2ZsYrUYBhFs4ursGBrq52VYOEDbKGPYCMoWNvoI9jYiTY+gSArlpaKWImFoKV2WmixWCmsyIpKRiIhJpPkzDjL5B6bxdm5Sb5z/zN/Mruxs1v8KvwnAQm0EthQEFeGBLoJKIirQwJzCCiIy0MCCuIakAAj4A7CuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJkKIaAgIUU7JiOgIIybqRACChJStGMyAgrCuJlqELhw8nJx/dy92at3X10rnny4PwlGay9IVcz2keOzQl58elycPbFTVP/f//F1bmHNfP39835H21/0ervOWz/u528fi1svrxSv956Nvky60Glu9AWuOLD2gpS8muWUr439NJtX8LLLry/mutB9Mvetjeq4+wdfsCB95+gT1B2EEvyPOQX5A1dBlr/IYnaQvtslsoP0HbPv07a8DWzbQaodsO02sXnO8r3VzlPfObc2jxVbm0dnlzBkZxpzq9l2zGXvsstf6uyIkxKkWlAViraFUz5Att2CjRVkkV2ryr7Zez57Xqp+ltf19P2D4vypS7NrbF7rvN/V31veYj18e7u4eubm3+MMfWjum6vr9lVBmIArSQ0ttUugcvGsoyDNRV+fodxBDn5+H/2NUhuH+u4yZDdaSekrOsmkdpC2T92uHaPJd0qCDP0Gr22NjeWwonV6aKeJFGTqt1jlfI/e3Skunr7xz61aKc+8XWDoblx9GNV3375jH9oqX+DEay/I0L8rdD34Nl+vP79U9/x9zzZjPrHbvuKtnkGqBdY875C/zTTnaD78149JBKkzaOanfAu29oIs8OFgtIXAVB+2adkKQslNKEe/rp4Qgs5RFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkxAQTA6gwkEFCShZWfEBBQEozOYQEBBElp2RkzgN6+/iM7/VfmVAAAAAElFTkSuQmCC">                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Color">Color</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.color()"><code>Random.color()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.color()</span>
+Random.color()
+Mock.mock(<span class="hljs-string">'@color'</span>)
+Mock.mock(<span class="hljs-string">'@color()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.color()</span>
+<span class="hljs-string">"#d0f279"</span>
+<span class="hljs-string">"#f079f2"</span>
+<span class="hljs-string">"#79f2cd"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.hex()"><code>Random.hex()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.hex()</span>
+Random.hex()
+Mock.mock(<span class="hljs-string">'@hex'</span>)
+Mock.mock(<span class="hljs-string">'@hex()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.hex()</span>
+<span class="hljs-string">"#f2aa79"</span>
+<span class="hljs-string">"#8679f2"</span>
+<span class="hljs-string">"#8ef279"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.rgb()"><code>Random.rgb()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.rgb()</span>
+Random.rgb()
+Mock.mock(<span class="hljs-string">'@rgb'</span>)
+Mock.mock(<span class="hljs-string">'@rgb()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.rgb()</span>
+<span class="hljs-string">"rgb(242, 121, 178)"</span>
+<span class="hljs-string">"rgb(121, 213, 242)"</span>
+<span class="hljs-string">"rgb(242, 235, 121)"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.rgba()"><code>Random.rgba()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.rgba()</span>
+Random.rgba()
+Mock.mock(<span class="hljs-string">'@rgba'</span>)
+Mock.mock(<span class="hljs-string">'@rgba()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.rgba()</span>
+<span class="hljs-string">"rgba(200, 121, 242, 0.53)"</span>
+<span class="hljs-string">"rgba(121, 242, 165, 0.60)"</span>
+<span class="hljs-string">"rgba(242, 129, 121, 0.94)"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.hsl()"><code>Random.hsl()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.hsl()</span>
+Random.hsl()
+Mock.mock(<span class="hljs-string">'@hsl'</span>)
+Mock.mock(<span class="hljs-string">'@hsl()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.hsl()</span>
+<span class="hljs-string">"hsl(226, 82, 71)"</span>
+<span class="hljs-string">"hsl(89, 82, 71)"</span>
+<span class="hljs-string">"hsl(311, 82, 71)"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Text">Text</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.paragraph( min?, max? )"><code>Random.paragraph( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.paragraph()</span>
+Random.paragraph()
+
+Mock.mock(<span class="hljs-string">'@paragraph'</span>)
+
+Mock.mock(<span class="hljs-string">'@paragraph()'</span>)
+
+<span class="hljs-comment">// Random.paragraph( len )</span>
+Random.paragraph(<span class="hljs-number">2</span>)
+
+Mock.mock(<span class="hljs-string">'@paragraph(2)'</span>)
+
+<span class="hljs-comment">// Random.paragraph( min, max )</span>
+Random.paragraph(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+
+Mock.mock(<span class="hljs-string">'@paragraph(1, 3)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.paragraph()</span>
+<span class="hljs-string">"Owkncg pyjhq cob ecjfer zmcfpfypg krekdkdlo emo uqvj rkrrgddtt vhsl ccowlddw ybdosv. Fcjjs nvxmle bxlevs qxf rjcolyf ccliltflqj nlgyzbjhe kluve tvpdk vnkumjse sgntuxpv lbt omvjmuyeb bcbspbr bpvuk dcoxyuoy. Vwrnw slszkrgemf lvlcemtew mxtp duypbuzs rhulmm tdtqqqk zlrlym xzxxw eynfsi yppivdl vvicxwv prwum tzae cefo iejpd vkypjto. Ogdosqifw witkj vppskoyvd bmb sojuk wdufa gdon esptw qqyzeeeht biej uoe rdhoqfg kyerubgipo. Ghuaisfm oeb wmfodvnj yhfvdrefq mogmrjzf bvsbngmkv tuifve ydp sqpmhx cbnpops sqoipiayy est jqsjs yluf irckftsfdn."</span>
+
+<span class="hljs-string">"Eizyyilqa ypx qjax atwd zwrxhexsc suht yrudwo jpxprz gyplpyzje rnumqv hganjr cnfe. Topiitj kigyq kdwlxly hmkgwb qsyrthly clarawv xfyu piosmyd mtowgedx pkmpvkk emsxitj hbwhvxlqwj epfqvqg. Gegjlvbng naoxv nhj wqiwegws hxyq sbxkdfjmo vwprqvm yjqcxwo ilcfdlc mzmc smwabvqtqh dbtfzgk yyrg uwdlg afdh hmevlrer. Rtn eokjsgrjjg cngbh nadj vveb jxudq obpxrgirm forxkg oble asunsrn dbothji cilb. Hfjeelcjjn edzjqptnw fqvebuvgj mkxx gzoirmmpuf ghcpdjsne xaojnjav qvhphxf djasjioi fzqy gzg irme fyuryfxt."</span>
+
+<span class="hljs-string">"Dmhrjbavb wsdnhtsh jrvky aem jcqdyspyoj pfmhymys pvn losmbloz fmjsp qouovdu vuxuhfm tmioxf mspgiq odmijuwqp efzc kclbbtqv aobopl. Nukdfaqavl rent ghkvrxk pilmeq psc lxujfjd gwj yueheuqul mskyui bwviqyk bzey nttsjl hssnqmjvtv. Lsqnbpfj irbtryd ieqdri kgdymsd yrq cob fekr tsb vsifygfuj uwplcddli toxzile okduqlqur. Ljrf knir nmkhtguswt undlil dcdvbmrj qdcrp veydkripk wpetrpqu nfkgjh shwpqufpeq aqpxjny ojywt tojvisj cgpbbwztf jjgxnfoke rha xkuuqtmuo ssqlpfoux. Hmxwqfncmv hjjjwilp mlbfnawob opnl trmku ste twisvbtob mkqvdyr scilfylyi pfkwmulf sfnitrhrir fbscfwbcg."</span>
+
+<span class="hljs-comment">// Random.paragraph( len )</span>
+<span class="hljs-string">"Upgw lmvl mtkvm rddjvbngx dudyhf uugt huwjnwsrl vtspvjl wudondyx wkcmsnd wrdqlob ikyuvnooa uinl plnhbud qdrcfowq. Eeiph csohlbygv cxnxx odywees dmsrsc tro pwvvkhd ogberpbb bdwszqh zgtfnjmqh qxjjdhgk pds lmkmyerjv hgtroehqq."</span>
+
+<span class="hljs-string">"Llibo pwbcqbmkr ruwgvvz wlcodksn asgcp obhglifdpz fprjlkp mgwpyvb gsb dkvaoy ucqun jcjemykvuo oird fslo. Gdlfbqey xownpcife qgkxwjip pyrgwxv jsoulp latpmxbrd hqhohs kxeumhvfjh ovvkblx dyncyw rxuacnm ekyfnqwx imnpfci nhsremkib cjbnr bwlblr."</span>
+
+<span class="hljs-comment">// Random.paragraph( min, max )</span>
+<span class="hljs-string">"Swn mly eswdept trcoobw qflgx bqkmwm nddlxspa qkhyvhrj yxkdtgyok dfxfkdfv kpfqi umlq."</span>
+
+<span class="hljs-string">"Jecymvxk sxmt ywmucvfvl sxnwd mfvsq dlfvrrummz hebre chtudflvi ixlzylfgp tfbxw zdadprop kxndy oavgbk."</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.sentence( min?, max? )"><code>Random.sentence( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.sentence()</span>
+Random.sentence()
+Mock.mock(<span class="hljs-string">'@sentence'</span>)
+Mock.mock(<span class="hljs-string">'@sentence()'</span>)
+
+<span class="hljs-comment">// Random.sentence( len )</span>
+Random.sentence(<span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@sentence(5)'</span>)
+
+<span class="hljs-comment">// Random.sentence( min, max )</span>
+Random.sentence(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@sentence(3, 5)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.sentence()</span>
+<span class="hljs-string">"Cknblgqqbz cybjyhoegj nbuxlnmwac ggmtstazb yniqcxn lcau zyc gonxpge plemwjdq svfjduwjb vpdxyczu ycobund zhek yssxzj."</span>
+<span class="hljs-string">"Bvlad mwhc dllrrzu epotdbrv xnac osvxlws hfuls rjbrwm ppnvgi tijy yruiqeprl dje nujzr."</span>
+<span class="hljs-string">"Rlxhzu opwcgyii fbjhnnjfz snetwo nanvbeo duqnaara yuiwl dfkdvfb qbd nsqxhmfe ubhpsxx wecgmdny xihnfnjq qgyaog yzknvergu iocomg mxyopymbb."</span>
+
+<span class="hljs-comment">// Random.sentence( len )</span>
+<span class="hljs-string">"Zmvbldxrj aeuxvkhxks mxmemo mcnkowkih eekpoy."</span>
+<span class="hljs-string">"Mwdm zpddqaym wtwupsmm ujtsgel mgpktwqv."</span>
+
+<span class="hljs-comment">// Random.sentence( min, max )</span>
+<span class="hljs-string">"Bmx xwoxvvx vjoluig."</span>
+<span class="hljs-string">"Xljlkpk lqxfoae lszzrire wxvuyfzgf qmhkqmah."</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.word( min?, max? )"><code>Random.word( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.word()</span>
+Random.word()
+Mock.mock(<span class="hljs-string">'@word'</span>)
+Mock.mock(<span class="hljs-string">'@word()'</span>)
+
+<span class="hljs-comment">// Random.word( len )</span>
+Random.word(<span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@word(5)'</span>)
+
+<span class="hljs-comment">// Random.word( min, max )</span>
+Random.word(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@word(3, 5)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.word()</span>
+<span class="hljs-string">"rvhvqlpw"</span>
+<span class="hljs-string">"sidwrpd"</span>
+<span class="hljs-string">"edi"</span>
+
+<span class="hljs-comment">// Random.word( len )</span>
+<span class="hljs-string">"nkwys"</span>
+<span class="hljs-string">"ejunk"</span>
+
+<span class="hljs-comment">// Random.word( min, max )</span>
+<span class="hljs-string">"egzjh"</span>
+<span class="hljs-string">"kmrr"</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.title( min?, max? )"><code>Random.title( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.title()</span>
+Random.title()
+Mock.mock(<span class="hljs-string">'@title'</span>)
+Mock.mock(<span class="hljs-string">'@title()'</span>)
+
+<span class="hljs-comment">// Random.title( len )</span>
+Random.title(<span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@title(5)'</span>)
+
+<span class="hljs-comment">// Random.title( min, max )</span>
+Random.title(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@title(3, 5)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.title()</span>
+<span class="hljs-string">"Ejrlmqidey Yabbewht Mlxjycvl Xerpdqi Noe Ltmcx"</span>
+<span class="hljs-string">"Bvmmygdf Kfnmdnf Bsfankq Vcvbyes Iyensgkfon Epnpd"</span>
+<span class="hljs-string">"Sgvbyzvb Yfqj Gakvwyqpm"</span>
+
+<span class="hljs-comment">// Random.title( len )</span>
+<span class="hljs-string">"Iykalc Tfcmpy Zxsphoenq Ylsvml Hgmiitbszr"</span>
+<span class="hljs-string">"Irxtgldd Pqneunvxp Kcqj Xumxklxyi Tvmpmd"</span>
+
+<span class="hljs-comment">// Random.title( min, max )</span>
+<span class="hljs-string">"Ittes Anklcp Mbkhnonstu Xzhx Hbjfejyah"</span>
+<span class="hljs-string">"Puoev Dqntmrdi Lhsmtt Fukid"</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.cparagraph( min?, max? )"><code>Random.cparagraph( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cparagraph()</span>
+Random.cparagraph()
+
+Mock.mock(<span class="hljs-string">'@cparagraph'</span>)
+
+Mock.mock(<span class="hljs-string">'@cparagraph()'</span>)
+
+<span class="hljs-comment">// Random.cparagraph( len )</span>
+Random.cparagraph(<span class="hljs-number">2</span>)
+
+Mock.mock(<span class="hljs-string">'@cparagraph(2)'</span>)
+
+<span class="hljs-comment">// Random.cparagraph( min, max )</span>
+Random.cparagraph(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
+
+Mock.mock(<span class="hljs-string">'@cparagraph(1, 3)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cparagraph()</span>
+<span class="hljs-string">"整何容总火养今合划严话人因行。放下发必此头般复族去物选飞后消必县何。认象总联现反次天程总科低火间位无列。列问比划解行始采克办多极提以。管总快队要连也办空候眼建近点公价备。生料原老程全正斯色至场将又展。"</span>
+
+<span class="hljs-string">"温东由务入快便点提属科江快京千。权只约油规议理对往清住志组。程九连她现流得感两院记重人之东。而管回当况手温工前才说处斯。候收料度几红工原九影速多步家。局实去国联如正术省流极青理石战已想运。"</span>
+
+<span class="hljs-string">"劳进周连现需形六必被发因目们。山满局少铁始眼市才连历主手省整最志。断子对对始深里领委林还经头。不划层治车一起高半济地团反文意即调。"</span>
+
+<span class="hljs-comment">// Random.cparagraph( len )</span>
+<span class="hljs-string">"根感离化拉级军己种增权思育都何那。府且指装存着元起属与几做最受量者消。"</span>
+
+<span class="hljs-string">"使分口观越电张区革却情节备起已。计县今空局观思确群图且始许。"</span>
+
+<span class="hljs-comment">// Random.cparagraph( min, max )</span>
+<span class="hljs-string">"制发持已期还如济观广省技层果格族。展安打最组装层强还表其采心口。"</span>
+
+<span class="hljs-string">"越心为深知光派美导切铁下拉从空。引切内厂九老备林长员片置度越导。"</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.csentence( min?, max? )"><code>Random.csentence( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.csentence()</span>
+Random.csentence()
+Mock.mock(<span class="hljs-string">'@csentence'</span>)
+Mock.mock(<span class="hljs-string">'@csentence()'</span>)
+
+<span class="hljs-comment">// Random.csentence( len )</span>
+Random.csentence(<span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@csentence(5)'</span>)
+
+<span class="hljs-comment">// Random.csentence( min, max )</span>
+Random.csentence(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@csentence(3, 5)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.csentence()</span>
+<span class="hljs-string">"且现等示参适如标办和数研和需面广值。"</span>
+<span class="hljs-string">"构五情人院却再深这列快结满车。"</span>
+<span class="hljs-string">"接器少京加者保干交将增色总眼儿此须。"</span>
+
+<span class="hljs-comment">// Random.csentence( len )</span>
+<span class="hljs-string">"知二级参象。"</span>
+<span class="hljs-string">"目各部会回。"</span>
+
+<span class="hljs-comment">// Random.csentence( min, max )</span>
+<span class="hljs-string">"易子眼称。"</span>
+<span class="hljs-string">"它管但亲。"</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.cword( pool?, min?, max? )"><code>Random.cword( pool?, min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cword()</span>
+Random.cword()
+Mock.mock(<span class="hljs-string">'@cword'</span>)
+Mock.mock(<span class="hljs-string">'@cword()'</span>)
+
+<span class="hljs-comment">// Random.cword( pool )</span>
+Random.cword(<span class="hljs-string">'零一二三四五六七八九十'</span>)
+Mock.mock(<span class="hljs-string">'@cword("零一二三四五六七八九十")'</span>)
+
+<span class="hljs-comment">// Random.cword( length )</span>
+Random.cword(<span class="hljs-number">3</span>)
+Mock.mock(<span class="hljs-string">'@cword(3)'</span>)
+
+<span class="hljs-comment">// Random.cword( pool, length )</span>
+Random.cword(<span class="hljs-string">'零一二三四五六七八九十'</span>, <span class="hljs-number">3</span>)
+Mock.mock(<span class="hljs-string">'@cword("零一二三四五六七八九十", 3)'</span>)
+
+<span class="hljs-comment">// Random.cword( min, max )</span>
+Random.cword(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@cword(3, 5)'</span>)
+
+<span class="hljs-comment">// Random.cword( pool, min, max )</span>
+Random.cword(<span class="hljs-string">'零一二三四五六七八九十'</span>, <span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+Mock.mock(<span class="hljs-string">'@cword("零一二三四五六七八九十", 5, 7)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cword()</span>
+<span class="hljs-string">"委"</span>
+<span class="hljs-string">"传"</span>
+<span class="hljs-string">"派"</span>
+
+<span class="hljs-comment">// Random.cword( pool )</span>
+<span class="hljs-string">"七"</span>
+<span class="hljs-string">"一"</span>
+
+<span class="hljs-comment">// Random.cword( length )</span>
+<span class="hljs-string">"但张量"</span>
+<span class="hljs-string">"王无度"</span>
+
+<span class="hljs-comment">// Random.cword( pool, length )</span>
+<span class="hljs-string">"零五零"</span>
+<span class="hljs-string">"二零九"</span>
+
+<span class="hljs-comment">// Random.cword( min, max )</span>
+<span class="hljs-string">"度则比"</span>
+<span class="hljs-string">"线革并"</span>
+
+<span class="hljs-comment">// Random.cword( pool, min, max )</span>
+<span class="hljs-string">"五六九五二一"</span>
+<span class="hljs-string">"四五九四四十八"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.ctitle( min?, max? )"><code>Random.ctitle( min?, max? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.ctitle()</span>
+Random.ctitle()
+Mock.mock(<span class="hljs-string">'@ctitle'</span>)
+Mock.mock(<span class="hljs-string">'@ctitle()'</span>)
+
+<span class="hljs-comment">// Random.ctitle( len )</span>
+Random.ctitle(<span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@ctitle(5)'</span>)
+
+<span class="hljs-comment">// Random.ctitle( min, max )</span>
+Random.ctitle(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+Mock.mock(<span class="hljs-string">'@ctitle(3, 5)'</span>)
+</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.ctitle()</span>
+<span class="hljs-string">"加必报少前指"</span>
+<span class="hljs-string">"县或规种"</span>
+<span class="hljs-string">"学动在"</span>
+
+<span class="hljs-comment">// Random.ctitle( len )</span>
+<span class="hljs-string">"亲极走表则"</span>
+<span class="hljs-string">"由度县中特"</span>
+
+<span class="hljs-comment">// Random.ctitle( min, max )</span>
+<span class="hljs-string">"口单带称"</span>
+<span class="hljs-string">"却必验选"</span>
+</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Name">Name</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.first()"><code>Random.first()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.first()</span>
+Random.first()
+Mock.mock(<span class="hljs-string">'@first'</span>)
+Mock.mock(<span class="hljs-string">'@first()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.first()</span>
+<span class="hljs-string">"Daniel"</span>
+<span class="hljs-string">"Scott"</span>
+<span class="hljs-string">"Betty"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.last()"><code>Random.last()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.last()</span>
+Random.last()
+Mock.mock(<span class="hljs-string">'@last'</span>)
+Mock.mock(<span class="hljs-string">'@last()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.last()</span>
+<span class="hljs-string">"Lee"</span>
+<span class="hljs-string">"Hernandez"</span>
+<span class="hljs-string">"Clark"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.name( middle? )"><code>Random.name( middle? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.name()</span>
+Random.name()
+Mock.mock(<span class="hljs-string">'@name'</span>)
+Mock.mock(<span class="hljs-string">'@name()'</span>)
+
+<span class="hljs-comment">// Random.name( middle )</span>
+Random.name(<span class="hljs-literal">true</span>)
+Mock.mock(<span class="hljs-string">'@name(true)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.name()</span>
+<span class="hljs-string">"Michelle Perez"</span>
+<span class="hljs-string">"Helen Lee"</span>
+<span class="hljs-string">"Anthony Robinson"</span>
+
+<span class="hljs-comment">// Random.name( middle )</span>
+<span class="hljs-string">"Helen David Wilson"</span>
+<span class="hljs-string">"John Christopher Moore"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.cfirst()"><code>Random.cfirst()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cfirst()</span>
+Random.cfirst()
+Mock.mock(<span class="hljs-string">'@cfirst'</span>)
+Mock.mock(<span class="hljs-string">'@cfirst()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cfirst()</span>
+<span class="hljs-string">"吕"</span>
+<span class="hljs-string">"朱"</span>
+<span class="hljs-string">"郝"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.clast()"><code>Random.clast()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.clast()</span>
+Random.clast()
+Mock.mock(<span class="hljs-string">'@clast'</span>)
+Mock.mock(<span class="hljs-string">'@clast()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.clast()</span>
+<span class="hljs-string">"艳"</span>
+<span class="hljs-string">"秀兰"</span>
+<span class="hljs-string">"丽"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.cname()"><code>Random.cname()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cname()</span>
+Random.cname()
+Mock.mock(<span class="hljs-string">'@cname'</span>)
+Mock.mock(<span class="hljs-string">'@cname()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.cname()</span>
+<span class="hljs-string">"蒋敏"</span>
+<span class="hljs-string">"胡艳"</span>
+<span class="hljs-string">"潘刚"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Web">Web</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.url()"><code>Random.url()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.url()</span>
+Random.url()
+Mock.mock(<span class="hljs-string">'@url'</span>)
+Mock.mock(<span class="hljs-string">'@url()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.url()</span>
+<span class="hljs-string">"nntp://bncogbmq.tj/jifp"</span>
+<span class="hljs-string">"rlogin://bwcfksppw.zm/ehdw"</span>
+<span class="hljs-string">"mid://woxwbts.tr/yobsp"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.domain()"><code>Random.domain()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.domain()</span>
+Random.domain()
+Mock.mock(<span class="hljs-string">'@domain'</span>)
+Mock.mock(<span class="hljs-string">'@domain()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.domain()</span>
+<span class="hljs-string">"broopg.az"</span>
+<span class="hljs-string">"gxwhtiytp.lr"</span>
+<span class="hljs-string">"jjx.ki"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.protocol()"><code>Random.protocol()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.protocol()</span>
+Random.protocol()
+Mock.mock(<span class="hljs-string">'@protocol'</span>)
+Mock.mock(<span class="hljs-string">'@protocol()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.protocol()</span>
+<span class="hljs-string">"http"</span>
+<span class="hljs-string">"ftp"</span>
+<span class="hljs-string">"prospero"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.tld()"><code>Random.tld()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.tld()</span>
+Random.tld()
+Mock.mock(<span class="hljs-string">'@tld'</span>)
+Mock.mock(<span class="hljs-string">'@tld()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.tld()</span>
+<span class="hljs-string">"gh"</span>
+<span class="hljs-string">"gb"</span>
+<span class="hljs-string">"ls"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.email()"><code>Random.email()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.email()</span>
+Random.email()
+Mock.mock(<span class="hljs-string">'@email'</span>)
+Mock.mock(<span class="hljs-string">'@email()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.email()</span>
+<span class="hljs-string">"o.uknmxroii@zujypog.net.cn"</span>
+<span class="hljs-string">"a.sbt@rbqxqs.at"</span>
+<span class="hljs-string">"k.hcagrudi@tlewhcoj.net.cn"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.ip()"><code>Random.ip()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.ip()</span>
+Random.ip()
+Mock.mock(<span class="hljs-string">'@ip'</span>)
+Mock.mock(<span class="hljs-string">'@ip()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.ip()</span>
+<span class="hljs-string">"210.24.36.104"</span>
+<span class="hljs-string">"92.115.153.85"</span>
+<span class="hljs-string">"166.116.65.236"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Address">Address</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.region()"><code>Random.region()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.region()</span>
+Random.region()
+Mock.mock(<span class="hljs-string">'@region'</span>)
+Mock.mock(<span class="hljs-string">'@region()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.region()</span>
+<span class="hljs-string">"华南"</span>
+<span class="hljs-string">"华南"</span>
+<span class="hljs-string">"华中"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.province()"><code>Random.province()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.province()</span>
+Random.province()
+Mock.mock(<span class="hljs-string">'@province'</span>)
+Mock.mock(<span class="hljs-string">'@province()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.province()</span>
+<span class="hljs-string">"北京"</span>
+<span class="hljs-string">"西藏自治区"</span>
+<span class="hljs-string">"新疆维吾尔自治区"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.city( prefix? )"><code>Random.city( prefix? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.city()</span>
+Random.city()
+Mock.mock(<span class="hljs-string">'@city'</span>)
+Mock.mock(<span class="hljs-string">'@city()'</span>)
+<span class="hljs-comment">// Random.city( prefix )</span>
+Random.city(<span class="hljs-literal">true</span>)
+Mock.mock(<span class="hljs-string">'@city(true)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.city()</span>
+<span class="hljs-string">"台州市"</span>
+<span class="hljs-string">"九龙"</span>
+<span class="hljs-string">"贵港市"</span>
+<span class="hljs-comment">// Random.city( prefix )</span>
+<span class="hljs-string">"海南省 三亚市"</span>
+<span class="hljs-string">"上海 上海市"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.county( prefix? )"><code>Random.county( prefix? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.county()</span>
+Random.county()
+Mock.mock(<span class="hljs-string">'@county'</span>)
+Mock.mock(<span class="hljs-string">'@county()'</span>)
+<span class="hljs-comment">// Random.county( prefix )</span>
+Random.county(<span class="hljs-literal">true</span>)
+Mock.mock(<span class="hljs-string">'@county(true)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.county()</span>
+<span class="hljs-string">"科尔沁右翼中旗"</span>
+<span class="hljs-string">"莲花县"</span>
+<span class="hljs-string">"民勤县"</span>
+<span class="hljs-comment">// Random.county( prefix )</span>
+<span class="hljs-string">"台湾 基隆市 信义区"</span>
+<span class="hljs-string">"湖南省 衡阳市 常宁市"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.zip()"><code>Random.zip()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.zip()</span>
+Random.zip()
+Mock.mock(<span class="hljs-string">'@zip'</span>)
+Mock.mock(<span class="hljs-string">'@zip()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.zip()</span>
+<span class="hljs-string">"262683"</span>
+<span class="hljs-string">"369642"</span>
+<span class="hljs-string">"054261"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Helper">Helper</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.capitalize( word )"><code>Random.capitalize( word )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.capitalize( word )</span>
+Random.capitalize(<span class="hljs-string">'hello'</span>)
+Mock.mock(<span class="hljs-string">'@capitalize("hello")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.capitalize( word )</span>
+<span class="hljs-string">"Hello"</span>
+<span class="hljs-string">"Hello"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.upper( str )"><code>Random.upper( str )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.upper( str )</span>
+Random.upper(<span class="hljs-string">'hello'</span>)
+Mock.mock(<span class="hljs-string">'@upper("hello")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.upper( str )</span>
+<span class="hljs-string">"HELLO"</span>
+<span class="hljs-string">"HELLO"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.lower( str )"><code>Random.lower( str )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.lower( str )</span>
+Random.lower(<span class="hljs-string">'HELLO'</span>)
+Mock.mock(<span class="hljs-string">'@lower("HELLO")'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.lower( str )</span>
+<span class="hljs-string">"hello"</span>
+<span class="hljs-string">"hello"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.pick( arr )"><code>Random.pick( arr )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.pick( arr )</span>
+Random.pick([<span class="hljs-string">'a'</span>, <span class="hljs-string">'e'</span>, <span class="hljs-string">'i'</span>, <span class="hljs-string">'o'</span>, <span class="hljs-string">'u'</span>])
+Mock.mock(<span class="hljs-string">'@pick(["a", "e", "i", "o", "u"])'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.pick( arr )</span>
+<span class="hljs-string">"i"</span>
+<span class="hljs-string">"o"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.shuffle( arr )"><code>Random.shuffle( arr )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.shuffle( arr )</span>
+Random.shuffle([<span class="hljs-string">'a'</span>, <span class="hljs-string">'e'</span>, <span class="hljs-string">'i'</span>, <span class="hljs-string">'o'</span>, <span class="hljs-string">'u'</span>])
+Mock.mock(<span class="hljs-string">'@shuffle(["a", "e", "i", "o", "u"])'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.shuffle( arr )</span>
+[<span class="hljs-string">"e"</span>,<span class="hljs-string">"i"</span>,<span class="hljs-string">"o"</span>,<span class="hljs-string">"a"</span>,<span class="hljs-string">"u"</span>]
+[<span class="hljs-string">"e"</span>,<span class="hljs-string">"o"</span>,<span class="hljs-string">"i"</span>,<span class="hljs-string">"u"</span>,<span class="hljs-string">"a"</span>]</code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="mb20">
+                        <div class="fontsize-16 mb20" id="Miscellaneous">Miscellaneous</div>
+                        <div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.guid()"><code>Random.guid()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.guid()</span>
+Random.guid()
+Mock.mock(<span class="hljs-string">'@guid'</span>)
+Mock.mock(<span class="hljs-string">'@guid()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.guid()</span>
+<span class="hljs-string">"aFdc5e57-513c-F7DA-ED95-ACac7a9aaAD2"</span>
+<span class="hljs-string">"9ec73fe0-bcC3-7e6B-Ab9A-88A2FC4C1Bc3"</span>
+<span class="hljs-string">"bA8BF66E-23bf-8b31-3ef6-2fAF6E6bc1Cd"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.id()"><code>Random.id()</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.id()</span>
+Random.id()
+Mock.mock(<span class="hljs-string">'@id'</span>)
+Mock.mock(<span class="hljs-string">'@id()'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.id()</span>
+<span class="hljs-string">"130000201111189177"</span>
+<span class="hljs-string">"820000199202169378"</span>
+<span class="hljs-string">"370000198611018286"</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="mb20">
+                            <div class="fontsize-14 mb20" id="Random.increment( step? )"><code>Random.increment( step? )</code></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="code">
+                                        <span class="badge">Data Template</span>
+                                        <pre><code class="javascript hljs"><span class="hljs-comment">// Random.increment()</span>
+Random.increment()
+Mock.mock(<span class="hljs-string">'@increment'</span>)
+Mock.mock(<span class="hljs-string">'@increment()'</span>)
+
+<span class="hljs-comment">// Random.increment( step )</span>
+Random.increment(<span class="hljs-number">100</span>)
+Mock.mock(<span class="hljs-string">'@increment(100)'</span>)
+Random.increment(<span class="hljs-number">1000</span>)
+Mock.mock(<span class="hljs-string">'@increment(1000)'</span>)</code></pre>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="result">
+                                        <span class="badge">Result</span>
+                                        <div>
+                                            <pre><code class="javascript hljs"><span class="hljs-comment">// Random.increment()</span>
+<span class="hljs-number">1</span>
+<span class="hljs-number">2</span>
+<span class="hljs-number">3</span>
+
+<span class="hljs-comment">// Random.increment( step )</span>
+<span class="hljs-number">103</span>
+<span class="hljs-number">203</span>
+<span class="hljs-number">1203</span>
+<span class="hljs-number">2203</span></code></pre>
+                                            <a href="javascript:;" class="mockicon rerun"></a>
+                                        </div>
+                                        
+                                        <a href="javascript:;" class="mockicon rerun"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div></div>
+    
+    <script src="./Mock.js_files/config.js.下载"></script>
+    <script>
+        // require(['./assets/js/test.dtd'])
+        // require(['./assets/js/test.dpd'])
+        require(['./assets/js/examples'])
+    </script>
+    <link rel="stylesheet" href="./Mock.js_files/github.css"><!-- github -->
+    
+    <!-- <script src="./bower_components/highlightjs/highlight.pack.js"></script> -->
+    <!-- <script src="../dist/mock.js"></script> -->
+    
+    <!-- <script src="./site.test.template.js"></script> -->
+    <!-- <script src="./site.test.dtd.js"></script> -->
+    <!-- <script src="./site.test.dpd.js"></script> -->
+    <!-- <script>hljs.initHighlightingOnLoad();</script> -->
+
+</body></html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.order.dao.RefundItemDao">
+	<insert id="add" parameterType="refundItem" useGeneratedKeys="true" keyProperty="id">
+		insert into t_refund_item
+			(
+				create_date,
+				modify_date,
+				order_id,
+				refund_id,
+				order_item_id,
+				refund_fee,
+				settlement_refund_fee
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{orderId},
+				#{refundId},
+				#{orderItemId},
+				#{refundFee},
+				#{settlementRefundFee}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="refundItem">
+		update t_refund_item
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="orderId != null"> order_id = #{orderId},</if>
+			<if test="refundId != null"> refund_id = #{refundId},</if>
+			<if test="orderItemId != null"> order_item_id = #{orderItemId},</if>
+			<if test="refundFee != null"> refund_fee = #{refundFee},</if>
+			<if test="settlementRefundFee != null"> settlement_refund_fee = #{settlementRefundFee},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_refund_item
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="refundItem">
+		select
+			*
+		from
+			t_refund_item
+		where
+			id = #{id}
+	</select>
+</mapper>

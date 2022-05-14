@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.monitor.dao.AlarmGroupDao">
+	<insert id="add" parameterType="alarmGroup" useGeneratedKeys="true" keyProperty="id">
+		insert into t_monitor_alarm_group
+			(
+				create_date,
+				modify_date,
+				user_id,
+				name,
+				email_alarm,
+				phone_alarm,
+				start_time,
+				end_time,
+				description,
+				status
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{userId},
+				#{name},
+				#{emailAlarm},
+				#{phoneAlarm},
+				#{startTime},
+				#{endTime},
+				#{description},
+				#{status}
+			)	
+	</insert>
+	
+	<sql id="sqlForListByUserId">
+		from
+			t_monitor_alarm_group
+		where
+			user_id = #{userId}
+		<if test="name != null and '' != name">
+		and
+			name like #{name}
+		</if>
+		<if test="status != null">
+		and
+			status = #{status}
+		</if>
+	</sql>
+	
+	<select id="listByUserId" resultType="alarmGroup">
+		select
+			*
+		<include refid="sqlForListByUserId"></include>
+		order by
+			modify_date desc
+		<if test="pager != null">
+		limit
+			#{pager.start},#{pager.pageSize}
+		</if>
+	</select>
+	
+	<select id="countByUserId" resultType="int">
+		select
+			count(id)
+		<include refid="sqlForListByUserId"></include>
+	</select>
+	
+	<update id="updateByUserId" parameterType="alarmGroup">
+		update t_monitor_alarm_group
+		<set>
+			<if test="modifyDate != null"> modify_date = #{modifyDate},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="emailAlarm != null"> email_alarm = #{emailAlarm},</if>
+			<if test="phoneAlarm != null"> phone_alarm = #{phoneAlarm},</if>
+			<if test="startTime != null and '' != startTime"> start_time = #{startTime},</if>
+			<if test="endTime != null and '' != endTime"> end_time = #{endTime},</if>
+			<if test="description != null"> description = #{description},</if>
+			<if test="status != null and '' != status"> status = #{status},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			user_id = #{userId}
+	</update>
+	
+	<delete id="delByUserId" parameterType="long">
+		delete from
+			t_monitor_alarm_group
+		where
+			id = #{groupId}
+		and
+			user_id = #{userId}
+	</delete>
+	
+	<select id="getByUserId" resultType="alarmGroup">
+		select
+			*
+		from
+			t_monitor_alarm_group
+		where
+			id = #{groupId}
+		and
+			user_id = #{userId}
+	</select>
+	
+	<delete id="batchDelReceiver">
+		delete from
+			t_monitor_alarm_group_receiver
+		where
+			user_id = #{userId}
+		and
+			group_id = #{groupId}
+	</delete>
+	
+	<insert id="batchAddReceiver" useGeneratedKeys="true">
+		insert into t_monitor_alarm_group_receiver 
+			(
+				create_date,
+				modify_date,
+				user_id,
+				group_id,
+				receiver_id
+			)   
+    	values  
+	    <foreach collection="receiverList" item="item" index="index" separator="," >  
+	        (	
+	        	now(),
+				now(),
+				#{userId},
+				#{groupId},
+				#{item}
+			)  
+	    </foreach>  
+	</insert>
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.book.dao.BookChapterDao">
+	<insert id="add" parameterType="bookChapter" useGeneratedKeys="true" keyProperty="id">
+		insert into t_book_chapter
+			(
+				create_date,
+				modify_date,
+				book_id,
+				title,
+				sort_weight,
+				type,
+				parent_id,
+				content_id,
+				content_link
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{bookId},
+				#{title},
+				#{sortWeight},
+				#{type},
+				#{parentId},
+				#{contentId},
+				#{contentLink}
+			)	
+	</insert>
+	
+	<update id="update" parameterType="bookChapter">
+		update t_book_chapter
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="title != null and '' != title"> title = #{title},</if>
+			<if test="sortWeight != null"> sort_weight = #{sortWeight},</if>
+			<if test="type != null and '' != type"> type = #{type},</if>
+			<if test="parentId != null"> parent_id = #{parentId},</if>
+			<if test="contentId != null"> content_id = #{contentId},</if>
+			<if test="contentLink != null and '' != contentLink"> content_link = #{contentLink},</if>
+		</set>
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="long">
+		delete from
+			t_book_chapter
+		where
+			id = #{id}
+	</delete>
+	
+	<select id="getById" resultType="bookChapter">
+		select
+			*
+		from
+			t_book_chapter
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getByBookId" resultType="bookChapter">
+		select
+			*
+		from
+			t_book_chapter
+		where
+			id = #{chapterId}
+		and
+			book_id = #{bookId}
+	</select>
+	
+	<select id="listByBookId" resultType="bookChapter">
+		select
+			*
+		from
+			t_book_chapter
+		where
+			book_id = #{bookId}
+		<if test="condition != null and '' != condition">
+		and
+			title like #{condition}
+		</if>
+		<if test="parentId != null">
+		and
+			parent_id = #{parentId}
+		</if>
+		
+		order by
+			sort_weight asc,create_date asc
+	</select>
+	
+	<select id="getMaxSortWeight" resultType="int">
+		select
+			ifnull(max(sort_weight),0)
+		from
+			t_book_chapter
+		where
+			book_id = #{bookId}
+		<if test="parentId != null">
+		and
+			parent_id = #{parentId}
+		</if>
+	</select>
+	
+	<update id="updateSortWeight">
+		update
+			t_book_chapter
+		set
+			sort_weight = #{sortWeight}
+		where
+			id = #{chapterId}
+		and
+			book_id = #{bookId}
+	</update>
+	
+	<update id="buildSortWeight">
+		update
+			t_book_chapter
+		set
+			sort_weight = sort_weight + #{step}
+		where
+			book_id = #{bookId}
+		<if test="parentId != null">
+		and
+			parent_id = #{parentId}
+		</if>
+		and
+			sort_weight <![CDATA[ <= ]]> #{maxSortWeight}
+		and
+			sort_weight >= #{minSortWeight}
+	</update>
+	
+	<delete id="delByBookId">
+		delete from
+			t_book_chapter
+		where
+			id = #{chapterId}
+		and
+			book_id = #{bookId}
+	</delete>
+	
+	<update id="updateParentId">
+		update
+			t_book_chapter
+		set
+			parent_id = #{newParentId}
+		where
+			parent_id = #{oldParentId}
+	</update>
+	
+	<update id="renameByBookId">
+		update
+			t_book_chapter
+		set
+			title = #{title}
+		where
+			id = #{chapterId}
+		and
+			book_id = #{bookId}
+	</update>
+</mapper>

@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.doc.dao.InterDao">
+	<insert id="add" parameterType="inter" useGeneratedKeys="true" keyProperty="id">
+		insert into t_inter
+			(
+				create_date,
+				modify_date,
+				doc_id,
+				module_id,
+				name,
+				path,
+				path_regex,
+				method,
+				scheme,
+				summary,
+				description,
+				consume,
+				produce,
+				deprecated,
+				sort_weight,
+				del_flag,
+				dev_status,
+				label,
+				developer,
+				operation_id,
+				skip_common_param
+			)
+		values
+			(
+				#{createDate},
+				#{modifyDate},
+				#{docId},
+				#{moduleId},
+				#{name},
+				#{path},
+				#{pathRegex},
+				#{method},
+				#{scheme},
+				#{summary},
+				#{description},
+				#{consume},
+				#{produce},
+				#{deprecated},
+				#{sortWeight},
+				#{delFlag},
+				#{devStatus},
+				#{label},
+				#{developer},
+				#{operationId},
+				#{skipCommonParam}
+			)	
+	</insert>
+	
+	<update id="updateByDocId" parameterType="inter">
+		update t_inter
+		<set>
+			<if test="modifyDate != null and '' != modifyDate"> modify_date = #{modifyDate},</if>
+			<if test="moduleId != null and '' != moduleId"> module_id = #{moduleId},</if>
+			<if test="name != null and '' != name"> name = #{name},</if>
+			<if test="path != null and '' != path"> path = #{path},</if>
+			<if test="pathRegex != null and '' != pathRegex"> path_regex = #{pathRegex},</if>
+			<if test="method != null and '' != method"> method = #{method},</if>
+			<if test="scheme != null and '' != scheme"> scheme = #{scheme},</if>
+			<if test="summary != null and '' != summary"> summary = #{summary},</if>
+			<if test="true"> description = #{description},</if>
+			<if test="consume != null and '' != consume"> consume = #{consume},</if>
+			<if test="produce != null and '' != produce"> produce = #{produce},</if>
+			<if test="deprecated != null"> deprecated = #{deprecated},</if>
+			<if test="devStatus != null and '' != devStatus"> dev_status = #{devStatus},</if>
+			<if test="label != null"> label = #{label},</if>
+			<if test="developer != null"> developer = #{developer},</if>
+			<if test="operationId != null"> operation_id = #{operationId},</if>
+			<if test="skipCommonParam != null"> skip_common_param = #{skipCommonParam},</if>
+		</set>
+		where
+			id = #{id}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<delete id="deleteByDocId">
+		delete from
+			t_inter
+		where
+			id = #{interId}
+		and
+			doc_id = #{docId}
+	</delete>
+	
+	<select id="getById" resultType="inter">
+		select
+			*
+		from
+			t_inter
+		where
+			id = #{id}
+	</select>
+	
+	<select id="getInfoByDocId" resultType="map">
+		select
+			i.*,
+			m.id as module_id,
+			m.name as module_name
+		from
+			t_inter i
+		left join
+			t_module m
+		on
+			i.module_id = m.id
+		where
+			i.id = #{interId}
+		and
+			i.doc_id = #{docId}
+	</select>
+	
+	<sql id="sqlForListByDocId">
+		from
+			t_inter i
+		left join
+			t_module m
+		on
+			i.module_id = m.id
+		where
+			i.doc_id = #{docId}
+		<if test="moduleId != null">
+		and
+			i.module_id = #{moduleId}
+		</if>
+		
+		<if test="description != null and '' != description">
+		and
+			i.description like #{description}
+		</if>
+		
+		<if test="name != null and '' != name">
+		and
+			i.name like #{name}
+		</if>
+		
+		<if test="path != null and '' != path">
+		and
+			i.path like #{path}
+		</if>
+	</sql>
+	
+	<select id="listByDocId" resultType="inter">
+		select
+			i.*
+		<include refid="sqlForListByDocId"></include>
+		order by
+			m.sort_weight asc,i.sort_weight asc,i.modify_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByDocId" resultType="int">
+		select
+			count(i.id)
+		<include refid="sqlForListByDocId"></include>
+	</select>
+	
+	<select id="listAllByDocId" resultType="inter">
+		select
+			i.*
+		from
+			t_inter i
+		left join
+			t_module m
+		on
+			i.module_id = m.id
+		where
+			i.doc_id = #{docId}
+		<if test="moduleId != null">
+		and
+			i.module_id = #{moduleId}
+		</if>
+		
+		<if test="deprecated != null">
+		and
+			i.deprecated = #{deprecated}
+		</if>
+		
+		<if test="condition != null and '' != condition">
+		and
+			(i.name like #{condition} or i.path like #{condition} or i.label like #{condition})
+		</if>
+		
+		order by
+			m.sort_weight asc,i.sort_weight asc,create_date asc
+	</select>
+	
+	<select id="getByPathAndMethod" resultType="inter">
+		select
+			*
+		from
+			t_inter
+		where
+			doc_id = #{docId}
+		and
+			path = #{path}
+		and
+			method = #{method}
+	</select>
+	
+	<select id="getByDocId" resultType="inter">
+		select
+			*
+		from
+			t_inter
+		where
+			id = #{interId}
+		and
+			doc_id = #{docId}
+	</select>
+	
+	<select id="listForMockByDocId" resultType="inter">
+		select
+			id,
+			path,
+			path_regex,
+			method,
+			length(path) as path_length
+		from
+			t_inter
+		where
+			doc_id = #{docId}
+		<if test="method != null and '' != method">
+		and
+			method = #{method}
+		</if>
+		order by
+			path_length desc
+	</select>
+	
+	<select id="listForPathRegex" resultType="inter">
+		select
+			id,
+			path
+		from
+			t_inter
+		where
+			path_regex is null
+	</select>
+	
+	<update id="updateForPathRegex">
+		update
+			t_inter
+		set
+			path_regex = #{pathRegex}
+		where
+			id = #{interId}
+	</update>
+	
+	<update id="buildSortWeight">
+		update
+			t_inter
+		set
+			sort_weight = sort_weight + #{step}
+		where
+			doc_id = #{docId}
+		<if test="moduleId == null">
+		and
+			module_id is null
+		</if>
+		
+		<if test="moduleId != null">
+		and
+			module_id = #{moduleId}
+		</if>
+		
+		and
+			sort_weight <![CDATA[ <= ]]> #{maxSortWeight}
+		and
+			sort_weight >= #{minSortWeight}
+	</update>
+	
+	<select id="getMaxSortWeight" resultType="int">
+		select
+			ifnull(max(sort_weight),0)
+		from
+			t_inter
+		where
+			doc_id = #{docId}
+		<if test="moduleId == null">
+		and
+			module_id is null
+		</if>
+		
+		<if test="moduleId != null">
+		and
+			module_id = #{moduleId}
+		</if>
+	</select>
+	
+	<update id="updateName">
+		update
+			t_inter
+		set
+			name = #{name}
+		where
+			id = #{interId}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<update id="updateForDelModule">
+		update
+			t_inter
+		set
+			module_id = null
+		where
+			module_id = #{moduleId}
+	</update>
+	
+	<update id="updateSortWeight">
+		update
+			t_inter
+		set
+			sort_weight = #{sortWeight}
+		where
+			id = #{interId}
+		and
+			doc_id = #{docId}
+	</update>
+	
+	<select id="countByModule" resultType="map">
+		select
+			count(id) as total_count,
+			ifnull(module_id,-3) as module_id
+		from
+			t_inter
+		where
+			doc_id = #{docId}
+		group by
+			module_id
+	</select>
+	
+	<sql id="sqlForListByModuleId">
+		from
+			t_inter i
+		left join
+			t_module m
+		on
+			i.module_id = m.id
+		where
+			i.doc_id = #{docId}
+		<choose>
+			<when test="moduleId == -1"></when>
+			<when test="moduleId == -2">and 1 = 0</when>
+			<when test="moduleId == -3">
+			and
+				i.module_id is null
+			</when>
+			<when test="moduleId != null">
+			and
+				i.module_id = #{moduleId}
+			</when>
+		</choose>
+	</sql>
+	
+	<select id="listByModuleId" resultType="inter">
+		select
+			i.*
+		<include refid="sqlForListByModuleId"></include>
+		order by
+			m.sort_weight asc,i.sort_weight asc,i.modify_date desc
+		limit
+			#{pager.start},#{pager.pageSize}
+	</select>
+	
+	<select id="countByModuleId" resultType="int">
+		select
+			count(i.id)
+		<include refid="sqlForListByModuleId"></include>
+	</select>
+	
+	<select id="listByViewId" resultType="inter">
+		select 
+			i.*
+		from	
+			t_doc_view_resource dvr
+		inner join
+			t_inter i
+		on
+			(dvr.type = 'inter' 
+				and dvr.resource_id = i.id 
+				and dvr.doc_id = i.doc_id)
+		left join
+			t_module m
+		on
+			i.module_id = m.id
+		where
+			dvr.view_id = #{viewId}
+		<if test="condition != null and '' != condition">
+		and
+			(i.name like #{condition} or i.path like #{condition} or i.label like #{condition})
+		</if>
+		order by
+			m.sort_weight asc,i.sort_weight asc,i.modify_date desc
+	</select>
+</mapper>
